@@ -1,0 +1,1102 @@
+[
+    {
+        "question": "What is the capital of France?",
+        "choices": [
+            "London",
+            "Berlin",
+            "Paris",
+            "Madrid"
+        ],
+        "answer": "C",
+        "category": "geography"
+    },
+    {
+        "question": "Which planet is known as the Red Planet?",
+        "choices": [
+            "Venus",
+            "Mars",
+            "Jupiter",
+            "Saturn"
+        ],
+        "answer": "B",
+        "category": "science"
+    },
+    {
+        "question": "What is the chemical symbol for water?",
+        "choices": [
+            "H2O",
+            "CO2",
+            "NaCl",
+            "O2"
+        ],
+        "answer": "A",
+        "category": "science"
+    },
+    {
+        "question": "Who wrote 'Romeo and Juliet'?",
+        "choices": [
+            "Charles Dickens",
+            "William Shakespeare",
+            "Jane Austen",
+            "Mark Twain"
+        ],
+        "answer": "B",
+        "category": "literature"
+    },
+    {
+        "question": "What is the largest ocean on Earth?",
+        "choices": [
+            "Atlantic",
+            "Indian",
+            "Arctic",
+            "Pacific"
+        ],
+        "answer": "D",
+        "category": "geography"
+    },
+    {
+        "question": "What is the square root of 144?",
+        "choices": [
+            "10",
+            "11",
+            "12",
+            "14"
+        ],
+        "answer": "C",
+        "category": "math"
+    },
+    {
+        "question": "Which gas do plants absorb from the atmosphere?",
+        "choices": [
+            "Oxygen",
+            "Nitrogen",
+            "Carbon dioxide",
+            "Hydrogen"
+        ],
+        "answer": "C",
+        "category": "science"
+    },
+    {
+        "question": "In what year did World War II end?",
+        "choices": [
+            "1943",
+            "1944",
+            "1945",
+            "1946"
+        ],
+        "answer": "C",
+        "category": "history"
+    },
+    {
+        "question": "What is the primary function of mitochondria?",
+        "choices": [
+            "Protein synthesis",
+            "Energy production",
+            "Cell division",
+            "DNA replication"
+        ],
+        "answer": "B",
+        "category": "science"
+    },
+    {
+        "question": "Which element has the atomic number 1?",
+        "choices": [
+            "Helium",
+            "Hydrogen",
+            "Lithium",
+            "Carbon"
+        ],
+        "answer": "B",
+        "category": "science"
+    },
+    {
+        "question": "What is the longest river in the world?",
+        "choices": [
+            "Amazon",
+            "Nile",
+            "Yangtze",
+            "Mississippi"
+        ],
+        "answer": "B",
+        "category": "geography"
+    },
+    {
+        "question": "Who painted the Mona Lisa?",
+        "choices": [
+            "Michelangelo",
+            "Raphael",
+            "Leonardo da Vinci",
+            "Donatello"
+        ],
+        "answer": "C",
+        "category": "arts"
+    },
+    {
+        "question": "What is the speed of light approximately?",
+        "choices": [
+            "300,000 km/s",
+            "150,000 km/s",
+            "500,000 km/s",
+            "100,000 km/s"
+        ],
+        "answer": "A",
+        "category": "science"
+    },
+    {
+        "question": "Which country has the largest population?",
+        "choices": [
+            "USA",
+            "India",
+            "China",
+            "Indonesia"
+        ],
+        "answer": "B",
+        "category": "geography"
+    },
+    {
+        "question": "What is the value of pi to two decimal places?",
+        "choices": [
+            "3.12",
+            "3.14",
+            "3.16",
+            "3.18"
+        ],
+        "answer": "B",
+        "category": "math"
+    },
+    {
+        "question": "What does CPU stand for?",
+        "choices": [
+            "Central Processing Unit",
+            "Central Program Utility",
+            "Computer Processing Unit",
+            "Central Performance Unit"
+        ],
+        "answer": "A",
+        "category": "technology"
+    },
+    {
+        "question": "Which blood type is known as the universal donor?",
+        "choices": [
+            "A",
+            "B",
+            "AB",
+            "O"
+        ],
+        "answer": "D",
+        "category": "science"
+    },
+    {
+        "question": "What is the boiling point of water in Celsius?",
+        "choices": [
+            "90°C",
+            "95°C",
+            "100°C",
+            "110°C"
+        ],
+        "answer": "C",
+        "category": "science"
+    },
+    {
+        "question": "Who developed the theory of relativity?",
+        "choices": [
+            "Isaac Newton",
+            "Albert Einstein",
+            "Niels Bohr",
+            "Max Planck"
+        ],
+        "answer": "B",
+        "category": "science"
+    },
+    {
+        "question": "What is the largest mammal in the world?",
+        "choices": [
+            "Elephant",
+            "Blue whale",
+            "Giraffe",
+            "Hippopotamus"
+        ],
+        "answer": "B",
+        "category": "science"
+    },
+    {
+        "question": "Which programming language was created by Guido van Rossum?",
+        "choices": [
+            "Java",
+            "C++",
+            "Python",
+            "Ruby"
+        ],
+        "answer": "C",
+        "category": "technology"
+    },
+    {
+        "question": "What is the capital of Japan?",
+        "choices": [
+            "Osaka",
+            "Kyoto",
+            "Tokyo",
+            "Yokohama"
+        ],
+        "answer": "C",
+        "category": "geography"
+    },
+    {
+        "question": "How many chromosomes do humans have?",
+        "choices": [
+            "44",
+            "46",
+            "48",
+            "42"
+        ],
+        "answer": "B",
+        "category": "science"
+    },
+    {
+        "question": "What is the currency of the United Kingdom?",
+        "choices": [
+            "Euro",
+            "Dollar",
+            "Pound Sterling",
+            "Franc"
+        ],
+        "answer": "C",
+        "category": "geography"
+    },
+    {
+        "question": "Who discovered penicillin?",
+        "choices": [
+            "Marie Curie",
+            "Alexander Fleming",
+            "Louis Pasteur",
+            "Robert Koch"
+        ],
+        "answer": "B",
+        "category": "science"
+    },
+    {
+        "question": "What is the derivative of x squared?",
+        "choices": [
+            "x",
+            "2x",
+            "x/2",
+            "2x^2"
+        ],
+        "answer": "B",
+        "category": "math"
+    },
+    {
+        "question": "Which organ is responsible for pumping blood?",
+        "choices": [
+            "Liver",
+            "Lungs",
+            "Heart",
+            "Kidneys"
+        ],
+        "answer": "C",
+        "category": "science"
+    },
+    {
+        "question": "In which year was the first iPhone released?",
+        "choices": [
+            "2005",
+            "2006",
+            "2007",
+            "2008"
+        ],
+        "answer": "C",
+        "category": "technology"
+    },
+    {
+        "question": "What is the chemical formula for table salt?",
+        "choices": [
+            "NaOH",
+            "NaCl",
+            "KCl",
+            "CaCl2"
+        ],
+        "answer": "B",
+        "category": "science"
+    },
+    {
+        "question": "Which continent is the Sahara Desert located on?",
+        "choices": [
+            "Asia",
+            "South America",
+            "Africa",
+            "Australia"
+        ],
+        "answer": "C",
+        "category": "geography"
+    },
+    {
+        "question": "What does HTTP stand for?",
+        "choices": [
+            "HyperText Transfer Protocol",
+            "High Tech Transfer Protocol",
+            "HyperText Transmission Process",
+            "High Transfer Text Protocol"
+        ],
+        "answer": "A",
+        "category": "technology"
+    },
+    {
+        "question": "Who was the first person to walk on the moon?",
+        "choices": [
+            "Buzz Aldrin",
+            "Yuri Gagarin",
+            "Neil Armstrong",
+            "John Glenn"
+        ],
+        "answer": "C",
+        "category": "history"
+    },
+    {
+        "question": "What is the formula for the area of a circle?",
+        "choices": [
+            "2πr",
+            "πr²",
+            "πd",
+            "2πr²"
+        ],
+        "answer": "B",
+        "category": "math"
+    },
+    {
+        "question": "Which vitamin is produced when skin is exposed to sunlight?",
+        "choices": [
+            "Vitamin A",
+            "Vitamin B",
+            "Vitamin C",
+            "Vitamin D"
+        ],
+        "answer": "D",
+        "category": "science"
+    },
+    {
+        "question": "What is the tallest mountain in the world?",
+        "choices": [
+            "K2",
+            "Kangchenjunga",
+            "Mount Everest",
+            "Lhotse"
+        ],
+        "answer": "C",
+        "category": "geography"
+    },
+    {
+        "question": "What is the binary representation of the decimal number 10?",
+        "choices": [
+            "1000",
+            "1010",
+            "1100",
+            "1001"
+        ],
+        "answer": "B",
+        "category": "technology"
+    },
+    {
+        "question": "Which planet has the most moons?",
+        "choices": [
+            "Jupiter",
+            "Saturn",
+            "Uranus",
+            "Neptune"
+        ],
+        "answer": "B",
+        "category": "science"
+    },
+    {
+        "question": "What year did the Berlin Wall fall?",
+        "choices": [
+            "1987",
+            "1988",
+            "1989",
+            "1990"
+        ],
+        "answer": "C",
+        "category": "history"
+    },
+    {
+        "question": "What is the integral of 1/x?",
+        "choices": [
+            "x",
+            "ln(x)",
+            "1/x²",
+            "e^x"
+        ],
+        "answer": "B",
+        "category": "math"
+    },
+    {
+        "question": "What is the main component of the Sun?",
+        "choices": [
+            "Helium",
+            "Hydrogen",
+            "Oxygen",
+            "Carbon"
+        ],
+        "answer": "B",
+        "category": "science"
+    },
+    {
+        "question": "Who invented the telephone?",
+        "choices": [
+            "Thomas Edison",
+            "Nikola Tesla",
+            "Alexander Graham Bell",
+            "Guglielmo Marconi"
+        ],
+        "answer": "C",
+        "category": "history"
+    },
+    {
+        "question": "What is the largest continent by area?",
+        "choices": [
+            "Africa",
+            "North America",
+            "Asia",
+            "Europe"
+        ],
+        "answer": "C",
+        "category": "geography"
+    },
+    {
+        "question": "What does DNA stand for?",
+        "choices": [
+            "Deoxyribonucleic Acid",
+            "Dinitrogen Acid",
+            "Deoxyribose Nucleic Atom",
+            "Dynamic Nuclear Acid"
+        ],
+        "answer": "A",
+        "category": "science"
+    },
+    {
+        "question": "What is the time complexity of binary search?",
+        "choices": [
+            "O(n)",
+            "O(n²)",
+            "O(log n)",
+            "O(1)"
+        ],
+        "answer": "C",
+        "category": "technology"
+    },
+    {
+        "question": "Which Shakespeare play features the character Hamlet?",
+        "choices": [
+            "Macbeth",
+            "Hamlet",
+            "Othello",
+            "King Lear"
+        ],
+        "answer": "B",
+        "category": "literature"
+    },
+    {
+        "question": "What is the pH of pure water?",
+        "choices": [
+            "5",
+            "6",
+            "7",
+            "8"
+        ],
+        "answer": "C",
+        "category": "science"
+    },
+    {
+        "question": "Who wrote 'The Origin of Species'?",
+        "choices": [
+            "Gregor Mendel",
+            "Charles Darwin",
+            "Alfred Wallace",
+            "Jean-Baptiste Lamarck"
+        ],
+        "answer": "B",
+        "category": "science"
+    },
+    {
+        "question": "What is the smallest prime number?",
+        "choices": [
+            "0",
+            "1",
+            "2",
+            "3"
+        ],
+        "answer": "C",
+        "category": "math"
+    },
+    {
+        "question": "Which data structure uses FIFO ordering?",
+        "choices": [
+            "Stack",
+            "Queue",
+            "Tree",
+            "Graph"
+        ],
+        "answer": "B",
+        "category": "technology"
+    },
+    {
+        "question": "What is the capital of Australia?",
+        "choices": [
+            "Sydney",
+            "Melbourne",
+            "Canberra",
+            "Brisbane"
+        ],
+        "answer": "C",
+        "category": "geography"
+    },
+    {
+        "question": "What is Avogadro's number approximately?",
+        "choices": [
+            "6.022 × 10²³",
+            "3.14 × 10²³",
+            "1.602 × 10¹⁹",
+            "9.8 × 10²"
+        ],
+        "answer": "A",
+        "category": "science"
+    },
+    {
+        "question": "Who composed the Four Seasons?",
+        "choices": [
+            "Mozart",
+            "Bach",
+            "Vivaldi",
+            "Beethoven"
+        ],
+        "answer": "C",
+        "category": "arts"
+    },
+    {
+        "question": "What is the lightest element?",
+        "choices": [
+            "Helium",
+            "Hydrogen",
+            "Lithium",
+            "Carbon"
+        ],
+        "answer": "B",
+        "category": "science"
+    },
+    {
+        "question": "What does SQL stand for?",
+        "choices": [
+            "Structured Query Language",
+            "Simple Query Logic",
+            "Standard Question Language",
+            "Sequential Query Language"
+        ],
+        "answer": "A",
+        "category": "technology"
+    },
+    {
+        "question": "Which planet is closest to the Sun?",
+        "choices": [
+            "Venus",
+            "Mercury",
+            "Mars",
+            "Earth"
+        ],
+        "answer": "B",
+        "category": "science"
+    },
+    {
+        "question": "What is the Fibonacci sequence's first six numbers?",
+        "choices": [
+            "0,1,1,2,3,5",
+            "1,1,2,3,5,8",
+            "0,1,2,3,5,8",
+            "1,2,3,5,8,13"
+        ],
+        "answer": "A",
+        "category": "math"
+    },
+    {
+        "question": "Who painted 'Starry Night'?",
+        "choices": [
+            "Pablo Picasso",
+            "Claude Monet",
+            "Vincent van Gogh",
+            "Salvador Dali"
+        ],
+        "answer": "C",
+        "category": "arts"
+    },
+    {
+        "question": "What is the powerhouse of the cell?",
+        "choices": [
+            "Nucleus",
+            "Ribosome",
+            "Mitochondria",
+            "Endoplasmic reticulum"
+        ],
+        "answer": "C",
+        "category": "science"
+    },
+    {
+        "question": "Which sorting algorithm has the best average case?",
+        "choices": [
+            "Bubble Sort",
+            "Quick Sort",
+            "Selection Sort",
+            "Insertion Sort"
+        ],
+        "answer": "B",
+        "category": "technology"
+    },
+    {
+        "question": "What is the capital of Brazil?",
+        "choices": [
+            "Rio de Janeiro",
+            "São Paulo",
+            "Brasília",
+            "Salvador"
+        ],
+        "answer": "C",
+        "category": "geography"
+    },
+    {
+        "question": "What is Newton's second law of motion?",
+        "choices": [
+            "F = mv",
+            "F = ma",
+            "F = mg",
+            "F = mc²"
+        ],
+        "answer": "B",
+        "category": "science"
+    },
+    {
+        "question": "Who wrote '1984'?",
+        "choices": [
+            "Aldous Huxley",
+            "George Orwell",
+            "Ray Bradbury",
+            "H.G. Wells"
+        ],
+        "answer": "B",
+        "category": "literature"
+    },
+    {
+        "question": "What is the hexadecimal value of decimal 255?",
+        "choices": [
+            "EE",
+            "FF",
+            "FE",
+            "EF"
+        ],
+        "answer": "B",
+        "category": "technology"
+    },
+    {
+        "question": "What is the hardest natural substance?",
+        "choices": [
+            "Gold",
+            "Iron",
+            "Diamond",
+            "Quartz"
+        ],
+        "answer": "C",
+        "category": "science"
+    },
+    {
+        "question": "What is the sum of angles in a triangle?",
+        "choices": [
+            "90°",
+            "180°",
+            "270°",
+            "360°"
+        ],
+        "answer": "B",
+        "category": "math"
+    },
+    {
+        "question": "Which ocean is the smallest?",
+        "choices": [
+            "Indian",
+            "Atlantic",
+            "Southern",
+            "Arctic"
+        ],
+        "answer": "D",
+        "category": "geography"
+    },
+    {
+        "question": "What does RAM stand for?",
+        "choices": [
+            "Read Access Memory",
+            "Random Access Memory",
+            "Rapid Access Module",
+            "Read And Modify"
+        ],
+        "answer": "B",
+        "category": "technology"
+    },
+    {
+        "question": "Who discovered gravity?",
+        "choices": [
+            "Galileo Galilei",
+            "Isaac Newton",
+            "Albert Einstein",
+            "Copernicus"
+        ],
+        "answer": "B",
+        "category": "science"
+    },
+    {
+        "question": "What is the most abundant gas in Earth's atmosphere?",
+        "choices": [
+            "Oxygen",
+            "Carbon dioxide",
+            "Nitrogen",
+            "Argon"
+        ],
+        "answer": "C",
+        "category": "science"
+    },
+    {
+        "question": "In which year did the Titanic sink?",
+        "choices": [
+            "1910",
+            "1911",
+            "1912",
+            "1913"
+        ],
+        "answer": "C",
+        "category": "history"
+    },
+    {
+        "question": "What is the Big O of accessing an element in an array by index?",
+        "choices": [
+            "O(n)",
+            "O(log n)",
+            "O(1)",
+            "O(n²)"
+        ],
+        "answer": "C",
+        "category": "technology"
+    },
+    {
+        "question": "What is the capital of Canada?",
+        "choices": [
+            "Toronto",
+            "Vancouver",
+            "Montreal",
+            "Ottawa"
+        ],
+        "answer": "D",
+        "category": "geography"
+    },
+    {
+        "question": "What is the chemical symbol for gold?",
+        "choices": [
+            "Go",
+            "Gd",
+            "Au",
+            "Ag"
+        ],
+        "answer": "C",
+        "category": "science"
+    },
+    {
+        "question": "Who wrote 'Pride and Prejudice'?",
+        "choices": [
+            "Charlotte Brontë",
+            "Jane Austen",
+            "Emily Brontë",
+            "Virginia Woolf"
+        ],
+        "answer": "B",
+        "category": "literature"
+    },
+    {
+        "question": "What is 2^10?",
+        "choices": [
+            "512",
+            "1024",
+            "2048",
+            "4096"
+        ],
+        "answer": "B",
+        "category": "math"
+    },
+    {
+        "question": "Which protocol is used for secure web browsing?",
+        "choices": [
+            "HTTP",
+            "FTP",
+            "HTTPS",
+            "SMTP"
+        ],
+        "answer": "C",
+        "category": "technology"
+    },
+    {
+        "question": "What causes tides on Earth?",
+        "choices": [
+            "Wind",
+            "Moon's gravity",
+            "Earth's rotation",
+            "Sun's heat"
+        ],
+        "answer": "B",
+        "category": "science"
+    },
+    {
+        "question": "Who was the first President of the United States?",
+        "choices": [
+            "Thomas Jefferson",
+            "John Adams",
+            "George Washington",
+            "Benjamin Franklin"
+        ],
+        "answer": "C",
+        "category": "history"
+    },
+    {
+        "question": "What is the freezing point of water in Fahrenheit?",
+        "choices": [
+            "0°F",
+            "32°F",
+            "100°F",
+            "212°F"
+        ],
+        "answer": "B",
+        "category": "science"
+    },
+    {
+        "question": "Which language is primarily used for iOS development?",
+        "choices": [
+            "Java",
+            "Kotlin",
+            "Swift",
+            "Dart"
+        ],
+        "answer": "C",
+        "category": "technology"
+    },
+    {
+        "question": "What is the volume formula for a sphere?",
+        "choices": [
+            "4πr²",
+            "4/3πr³",
+            "πr²h",
+            "2πrh"
+        ],
+        "answer": "B",
+        "category": "math"
+    },
+    {
+        "question": "What is the Great Wall of China's approximate length?",
+        "choices": [
+            "5,000 km",
+            "13,000 km",
+            "21,000 km",
+            "30,000 km"
+        ],
+        "answer": "C",
+        "category": "history"
+    },
+    {
+        "question": "What is the SI unit of electric current?",
+        "choices": [
+            "Volt",
+            "Watt",
+            "Ampere",
+            "Ohm"
+        ],
+        "answer": "C",
+        "category": "science"
+    },
+    {
+        "question": "Which composer became deaf later in life?",
+        "choices": [
+            "Mozart",
+            "Beethoven",
+            "Bach",
+            "Chopin"
+        ],
+        "answer": "B",
+        "category": "arts"
+    },
+    {
+        "question": "What is the capital of South Korea?",
+        "choices": [
+            "Busan",
+            "Incheon",
+            "Seoul",
+            "Daegu"
+        ],
+        "answer": "C",
+        "category": "geography"
+    },
+    {
+        "question": "What type of bond forms between water molecules?",
+        "choices": [
+            "Ionic",
+            "Covalent",
+            "Hydrogen",
+            "Metallic"
+        ],
+        "answer": "C",
+        "category": "science"
+    },
+    {
+        "question": "What does API stand for?",
+        "choices": [
+            "Application Programming Interface",
+            "Automated Program Integration",
+            "Application Process Interface",
+            "Advanced Protocol Integration"
+        ],
+        "answer": "A",
+        "category": "technology"
+    },
+    {
+        "question": "Which is the longest bone in the human body?",
+        "choices": [
+            "Humerus",
+            "Tibia",
+            "Femur",
+            "Fibula"
+        ],
+        "answer": "C",
+        "category": "science"
+    },
+    {
+        "question": "What is the GCD of 12 and 18?",
+        "choices": [
+            "2",
+            "3",
+            "6",
+            "9"
+        ],
+        "answer": "C",
+        "category": "math"
+    },
+    {
+        "question": "Who wrote 'To Kill a Mockingbird'?",
+        "choices": [
+            "Mark Twain",
+            "Harper Lee",
+            "F. Scott Fitzgerald",
+            "Ernest Hemingway"
+        ],
+        "answer": "B",
+        "category": "literature"
+    },
+    {
+        "question": "Which sorting algorithm is stable and has O(n log n) time?",
+        "choices": [
+            "Quick Sort",
+            "Heap Sort",
+            "Merge Sort",
+            "Selection Sort"
+        ],
+        "answer": "C",
+        "category": "technology"
+    },
+    {
+        "question": "What is the capital of Egypt?",
+        "choices": [
+            "Alexandria",
+            "Cairo",
+            "Luxor",
+            "Giza"
+        ],
+        "answer": "B",
+        "category": "geography"
+    },
+    {
+        "question": "What is the speed of sound in air approximately?",
+        "choices": [
+            "150 m/s",
+            "343 m/s",
+            "500 m/s",
+            "700 m/s"
+        ],
+        "answer": "B",
+        "category": "science"
+    },
+    {
+        "question": "Who is known as the father of computers?",
+        "choices": [
+            "Alan Turing",
+            "Charles Babbage",
+            "John von Neumann",
+            "Ada Lovelace"
+        ],
+        "answer": "B",
+        "category": "technology"
+    },
+    {
+        "question": "What is the largest desert in the world?",
+        "choices": [
+            "Sahara",
+            "Arabian",
+            "Gobi",
+            "Antarctic"
+        ],
+        "answer": "D",
+        "category": "geography"
+    },
+    {
+        "question": "What is the probability of getting heads on a fair coin?",
+        "choices": [
+            "0.25",
+            "0.33",
+            "0.50",
+            "0.75"
+        ],
+        "answer": "C",
+        "category": "math"
+    },
+    {
+        "question": "Which gas is used in photosynthesis?",
+        "choices": [
+            "Oxygen",
+            "Nitrogen",
+            "Carbon dioxide",
+            "Methane"
+        ],
+        "answer": "C",
+        "category": "science"
+    },
+    {
+        "question": "In what year was the Declaration of Independence signed?",
+        "choices": [
+            "1774",
+            "1775",
+            "1776",
+            "1777"
+        ],
+        "answer": "C",
+        "category": "history"
+    },
+    {
+        "question": "What does OOP stand for in programming?",
+        "choices": [
+            "Object-Oriented Programming",
+            "Object-Ordered Processing",
+            "Optimal Operation Protocol",
+            "Open Object Platform"
+        ],
+        "answer": "A",
+        "category": "technology"
+    },
+    {
+        "question": "What is the Pythagorean theorem?",
+        "choices": [
+            "a+b=c",
+            "a²+b²=c²",
+            "a×b=c",
+            "a²-b²=c²"
+        ],
+        "answer": "B",
+        "category": "math"
+    }
+]
