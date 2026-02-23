@@ -7,6 +7,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import threading
 from pathlib import Path
 from typing import Optional
 
@@ -112,9 +113,23 @@ def _run_mini_humaneval(
 
     for problem in problems:
         prompt = problem["prompt"]
-        result = backend.generate(prompt, max_tokens=256)
 
-        if _test_code(problem["prompt"], result.text, problem["tests"]):
+        # Timeout guard: skip if generation takes too long (small models are slow)
+        result_container = [None]
+        def _gen():
+            result_container[0] = backend.generate(prompt, max_tokens=200)
+
+        thread = threading.Thread(target=_gen)
+        thread.start()
+        thread.join(timeout=30)  # 30s max per problem
+
+        if thread.is_alive() or result_container[0] is None:
+            # Timed out — skip this problem
+            if progress:
+                progress.advance(task)
+            continue
+
+        if _test_code(problem["prompt"], result_container[0].text, problem["tests"]):
             passed += 1
 
         if progress:
