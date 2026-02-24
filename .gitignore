@@ -26,7 +26,7 @@ Thumbs.db
 
 # Benchmark results
 *.json
-!src/tinybench/data/*.json
+!src/inferbox/data/*.json
 
 # Testing
 .pytest_cache/
