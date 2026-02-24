@@ -3,14 +3,14 @@ requires = ["setuptools>=68.0", "setuptools-scm>=8.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "tinybench"
+name = "inferbox"
 version = "0.1.0"
 description = "Edge AI benchmark tool — measure LLM performance on any hardware in one command"
 readme = "README.md"
 license = {text = "Apache-2.0"}
 requires-python = ">=3.10"
 authors = [
-    {name = "Agentic BitBox", email = "tinybench@agenticbitbox.com"},
+    {name = "Agnara", email = "inferbox@agenticbitbox.com"},
 ]
 keywords = ["ai", "benchmark", "edge", "llm", "inference", "performance"]
 classifiers = [
@@ -40,12 +40,12 @@ power = ["pyRAPL>=0.1"]
 dev = ["pytest>=7.0", "ruff>=0.1"]
 
 [project.scripts]
-tinybench = "tinybench.cli:main"
+inferbox = "inferbox.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/AgenticBitBox/tinybench"
-Repository = "https://github.com/AgenticBitBox/tinybench"
-Issues = "https://github.com/AgenticBitBox/tinybench/issues"
+Homepage = "https://github.com/Agnara/inferbox"
+Repository = "https://github.com/Agnara/inferbox"
+Issues = "https://github.com/Agnara/inferbox/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]

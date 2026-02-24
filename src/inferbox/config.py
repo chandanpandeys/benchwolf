@@ -1,4 +1,4 @@
-"""TinyBench configuration constants."""
+"""InferBox configuration constants."""
 
 from pathlib import Path
 

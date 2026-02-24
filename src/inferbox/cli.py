@@ -1,11 +1,11 @@
-"""TinyBench CLI — Edge AI Benchmark Tool.
+"""InferBox CLI — Edge AI Benchmark Tool.
 
 Usage:
-    tinybench run --model qwen2.5:3b
-    tinybench info
-    tinybench compare --models "qwen2.5:3b,phi3:3.8b"
-    tinybench preflight
-    tinybench leaderboard
+    inferbox run --model qwen2.5:3b
+    inferbox info
+    inferbox compare --models "qwen2.5:3b,phi3:3.8b"
+    inferbox preflight
+    inferbox leaderboard
 """
 
 from __future__ import annotations
@@ -17,24 +17,24 @@ from typing import Optional
 import click
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeRemainingColumn
 
-from tinybench import __version__
-from tinybench.backends.base import Backend
-from tinybench.backends.ollama import OllamaBackend
-from tinybench.benchmarks.inference import run_speed_benchmark
-from tinybench.benchmarks.memory import run_memory_benchmark
-from tinybench.benchmarks.quality import run_quality_benchmark
-from tinybench.config import RATING_THRESHOLDS
-from tinybench.hardware.detect import detect_hardware
-from tinybench.hardware.power import PowerMeter
-from tinybench.models import BenchmarkResult, PowerResult
-from tinybench.reporting.console import (
+from inferbox import __version__
+from inferbox.backends.base import Backend
+from inferbox.backends.ollama import OllamaBackend
+from inferbox.benchmarks.inference import run_speed_benchmark
+from inferbox.benchmarks.memory import run_memory_benchmark
+from inferbox.benchmarks.quality import run_quality_benchmark
+from inferbox.config import RATING_THRESHOLDS
+from inferbox.hardware.detect import detect_hardware
+from inferbox.hardware.power import PowerMeter
+from inferbox.models import BenchmarkResult, PowerResult
+from inferbox.reporting.console import (
     console,
     print_benchmark_results,
     print_comparison,
     print_hardware_info,
     print_header,
 )
-from tinybench.reporting.export import export_json, export_markdown
+from inferbox.reporting.export import export_json, export_markdown
 
 
 def _get_backend(backend_name: str) -> Backend:
@@ -43,12 +43,12 @@ def _get_backend(backend_name: str) -> Backend:
         return OllamaBackend()
     elif backend_name == "llamacpp":
         try:
-            from tinybench.backends.llamacpp import LlamaCppBackend
+            from inferbox.backends.llamacpp import LlamaCppBackend
             return LlamaCppBackend()
         except ImportError:
             console.print(
                 "[red]llama-cpp-python not installed.[/] "
-                "Install with: pip install tinybench[llamacpp]"
+                "Install with: pip install inferbox[llamacpp]"
             )
             sys.exit(1)
     else:
@@ -118,9 +118,9 @@ def _calculate_edge_score(result: BenchmarkResult) -> int:
 
 
 @click.group()
-@click.version_option(__version__, prog_name="tinybench")
+@click.version_option(__version__, prog_name="inferbox")
 def main():
-    """🔬 TinyBench — Edge AI Benchmark Tool.
+    """🔬 InferBox — Edge AI Benchmark Tool.
 
     Measure LLM inference performance on any hardware in one command.
     """
@@ -200,7 +200,7 @@ def run(
     run_quality = only in ("all", "quality")
 
     result = BenchmarkResult(
-        tinybench_version=__version__,
+        inferbox_version=__version__,
         model_name=model,
         model_quantization=model_info.get("quantization"),
         backend=backend,
@@ -287,18 +287,18 @@ def run(
         # Default output filename
         safe_model = model.replace(":", "_").replace("/", "_")
         if export == "json":
-            output = f"tinybench_{safe_model}.json"
+            output = f"inferbox_{safe_model}.json"
             export_json(result, output)
         elif export == "markdown":
-            output = f"tinybench_{safe_model}.md"
+            output = f"inferbox_{safe_model}.md"
             export_markdown(result, output)
         console.print(f"[green]✓ Results exported to {output}[/]")
 
     # Auto-save to local leaderboard
-    from tinybench.leaderboard import save_result
+    from inferbox.leaderboard import save_result
     saved_path = save_result(result)
     console.print(f"[dim]✓ Result saved to {saved_path}[/]")
-    console.print("[dim]  View all results: tinybench leaderboard[/]")
+    console.print("[dim]  View all results: inferbox leaderboard[/]")
 
 
 @main.command()
@@ -385,7 +385,7 @@ def compare(models: str, backend: str, runs: int, max_tokens: int):
 
         model_info = be.get_model_info()
         result = BenchmarkResult(
-            tinybench_version=__version__,
+            inferbox_version=__version__,
             model_name=model_name,
             model_quantization=model_info.get("quantization"),
             backend=backend,
@@ -409,7 +409,7 @@ def preflight(model: Optional[str]):
     from rich.table import Table
     from rich.text import Text
 
-    from tinybench.preflight import FitStatus, run_preflight
+    from inferbox.preflight import FitStatus, run_preflight
 
     print_header()
     console.print("[bold]🔍 Preflight Hardware Check[/]")
@@ -478,7 +478,7 @@ def preflight(model: Optional[str]):
                 f"[dim]Next steps:[/]\n"
                 f"  1. Install Ollama: [cyan]https://ollama.ai[/]\n"
                 f"  2. [bold]ollama pull {rec}[/]\n"
-                f"  3. [bold]tinybench run --model {rec}[/]",
+                f"  3. [bold]inferbox run --model {rec}[/]",
                 title="[bold]💡 Recommendation[/]",
                 border_style="green",
             )
@@ -516,7 +516,7 @@ def leaderboard(clear: bool):
     from rich.panel import Panel
     from rich.table import Table
 
-    from tinybench.leaderboard import get_leaderboard_summary, RESULTS_DIR
+    from inferbox.leaderboard import get_leaderboard_summary, RESULTS_DIR
 
     print_header()
 
@@ -536,7 +536,7 @@ def leaderboard(clear: bool):
             Panel(
                 "[dim]No benchmark results saved yet.[/]\n\n"
                 "Run a benchmark first:\n"
-                "  [bold]tinybench run --model qwen2.5:3b[/]",
+                "  [bold]inferbox run --model qwen2.5:3b[/]",
                 title="[bold]🏆 Leaderboard[/]",
                 border_style="blue",
             )

@@ -1,4 +1,4 @@
-"""Abstract backend interface for TinyBench."""
+"""Abstract backend interface for InferBox."""
 
 from __future__ import annotations
 

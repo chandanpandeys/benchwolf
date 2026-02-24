@@ -1,4 +1,4 @@
-# 🔬 TinyBench
+# 🔬 InferBox
 
 **Edge AI Benchmark Tool — Measure LLM performance on any hardware in one command.**
 
@@ -11,11 +11,11 @@
 
 ```bash
 pip install -e .
-tinybench preflight          # Check what your hardware can run (no downloads needed)
-tinybench run --model qwen2.5:3b   # Benchmark a model
+inferbox preflight          # Check what your hardware can run (no downloads needed)
+inferbox run --model qwen2.5:3b   # Benchmark a model
 ```
 
-TinyBench detects your hardware, runs speed/memory/power/quality benchmarks, and gives you a single **Edge Score** out of 100.
+InferBox detects your hardware, runs speed/memory/power/quality benchmarks, and gives you a single **Edge Score** out of 100.
 
 ## What It Measures
 
@@ -32,34 +32,34 @@ TinyBench detects your hardware, runs speed/memory/power/quality benchmarks, and
 
 ```bash
 # Check if your hardware can run LLMs (no Ollama needed!)
-tinybench preflight
+inferbox preflight
 
 # Check a specific model
-tinybench preflight --model mistral:7b
+inferbox preflight --model mistral:7b
 
 # Full benchmark
-tinybench run --model qwen2.5-coder:3b
+inferbox run --model qwen2.5-coder:3b
 
 # Speed-only (fast, ~2 min)
-tinybench run --model qwen2.5:3b --only speed
+inferbox run --model qwen2.5:3b --only speed
 
 # Compare models side-by-side
-tinybench compare --models "qwen2.5:3b,phi3:3.8b"
+inferbox compare --models "qwen2.5:3b,phi3:3.8b"
 
 # View your benchmark history
-tinybench leaderboard
+inferbox leaderboard
 
 # Show hardware info + backend status
-tinybench info
+inferbox info
 
 # Export results
-tinybench run --model qwen2.5:3b --export json -o results.json
-tinybench run --model qwen2.5:3b --export markdown -o results.md
+inferbox run --model qwen2.5:3b --export json -o results.json
+inferbox run --model qwen2.5:3b --export markdown -o results.md
 ```
 
 ## Preflight Check
 
-Don't know which model to run? `tinybench preflight` checks your hardware and tells you — **without downloading anything**:
+Don't know which model to run? `inferbox preflight` checks your hardware and tells you — **without downloading anything**:
 
 ```
 📊 Model Compatibility:
@@ -80,14 +80,14 @@ Don't know which model to run? `tinybench preflight` checks your hardware and te
 - **Ollama** running locally ([install](https://ollama.ai)) — *for benchmarks only*
 - A model pulled: `ollama pull qwen2.5:3b`
 
-> **Note:** `tinybench preflight` and `tinybench info` work without Ollama.
+> **Note:** `inferbox preflight` and `inferbox info` work without Ollama.
 
 ## Installation
 
 ```bash
 # From source
-git clone https://github.com/AgenticBitBox/tinybench.git
-cd tinybench
+git clone https://github.com/Agnara/inferbox.git
+cd inferbox
 pip install -e .
 
 # With llama.cpp support
@@ -98,7 +98,7 @@ pip install -e ".[llamacpp]"
 
 ```
 ╭──────────────────────────────────────────────╮
-│           🔬 TinyBench v0.1.0                │
+│           🔬 InferBox v0.1.0                │
 │          Edge AI Benchmark Tool              │
 ╰──────────────────────────────────────────────╯
 
@@ -126,15 +126,15 @@ pip install -e ".[llamacpp]"
 Every benchmark run is automatically saved to your local leaderboard:
 
 ```bash
-tinybench leaderboard          # View all results
-tinybench leaderboard --clear  # Clear history
+inferbox leaderboard          # View all results
+inferbox leaderboard --clear  # Clear history
 ```
 
-Results are stored in `~/.tinybench/results/` as JSON files.
+Results are stored in `~/.inferbox/results/` as JSON files.
 
 ## Power Measurement
 
-TinyBench uses the best available method:
+InferBox uses the best available method:
 
 | Tier | Method | Platform | Accuracy |
 |:---|:---|:---|:---|
@@ -145,7 +145,7 @@ TinyBench uses the best available method:
 
 ## Cross-Platform
 
-TinyBench is pure Python — works on **Windows**, **Linux**, and **macOS** out of the box. Power measurement is even more accurate on Linux (RAPL/hwmon access).
+InferBox is pure Python — works on **Windows**, **Linux**, and **macOS** out of the box. Power measurement is even more accurate on Linux (RAPL/hwmon access).
 
 ## License
 
@@ -153,4 +153,4 @@ Apache 2.0 — See [LICENSE](LICENSE) for details.
 
 ---
 
-Made with 🔬 by [Agentic BitBox](https://github.com/AgenticBitBox)
+Made with 🔬 by [Agnara](https://github.com/Agnara)

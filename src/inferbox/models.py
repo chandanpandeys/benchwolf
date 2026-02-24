@@ -1,4 +1,4 @@
-"""Pydantic data models for TinyBench results."""
+"""Pydantic data models for InferBox results."""
 
 from __future__ import annotations
 
@@ -89,7 +89,7 @@ class BenchmarkResult(BaseModel):
 
     model_config = ConfigDict(protected_namespaces=())
 
-    tinybench_version: str
+    inferbox_version: str
     timestamp: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     model_name: str
     model_quantization: Optional[str] = None

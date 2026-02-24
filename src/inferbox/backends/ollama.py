@@ -1,4 +1,4 @@
-"""Ollama backend for TinyBench.
+"""Ollama backend for InferBox.
 
 Uses the Ollama HTTP API for inference and timing measurement.
 """
@@ -11,8 +11,8 @@ from typing import Optional
 
 import requests
 
-from tinybench.backends.base import Backend, GenerationResult
-from tinybench.config import OLLAMA_BASE_URL, OLLAMA_TIMEOUT
+from inferbox.backends.base import Backend, GenerationResult
+from inferbox.config import OLLAMA_BASE_URL, OLLAMA_TIMEOUT
 
 
 class OllamaBackend(Backend):

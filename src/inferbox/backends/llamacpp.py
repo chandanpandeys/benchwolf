@@ -1,9 +1,9 @@
-"""llama-cpp-python backend for TinyBench.
+"""llama-cpp-python backend for InferBox.
 
 Provides direct access to llama.cpp via Python bindings for
 more precise timing without HTTP overhead.
 
-Install: pip install tinybench[llamacpp]
+Install: pip install inferbox[llamacpp]
 """
 
 from __future__ import annotations
@@ -12,7 +12,7 @@ import time
 from pathlib import Path
 from typing import Optional
 
-from tinybench.backends.base import Backend, GenerationResult
+from inferbox.backends.base import Backend, GenerationResult
 
 
 class LlamaCppBackend(Backend):
@@ -56,7 +56,7 @@ class LlamaCppBackend(Backend):
         except ImportError:
             raise RuntimeError(
                 "llama-cpp-python is not installed. "
-                "Install with: pip install tinybench[llamacpp]"
+                "Install with: pip install inferbox[llamacpp]"
             )
 
         model_path = Path(model_name)

@@ -1,4 +1,4 @@
-"""Hardware detection for TinyBench."""
+"""Hardware detection for InferBox."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from typing import Optional
 
 import psutil
 
-from tinybench.models import HardwareProfile
+from inferbox.models import HardwareProfile
 
 
 def detect_hardware() -> HardwareProfile:

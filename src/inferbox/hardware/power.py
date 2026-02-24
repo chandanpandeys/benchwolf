@@ -1,4 +1,4 @@
-"""Power measurement for TinyBench.
+"""Power measurement for InferBox.
 
 Tiered approach:
   Tier 1: Intel RAPL (pyRAPL) — most accurate on x86

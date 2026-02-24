@@ -13,9 +13,9 @@ from typing import Optional
 
 from rich.progress import Progress
 
-from tinybench.backends.base import Backend
-from tinybench.config import DATA_DIR
-from tinybench.models import QualityResult
+from inferbox.backends.base import Backend
+from inferbox.config import DATA_DIR
+from inferbox.models import QualityResult
 
 
 def run_quality_benchmark(

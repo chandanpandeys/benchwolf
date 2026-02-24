@@ -11,9 +11,9 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
-from tinybench.data.model_db import MODEL_DATABASE, ModelSpec, get_model_spec
-from tinybench.hardware.detect import detect_hardware
-from tinybench.models import HardwareProfile
+from inferbox.data.model_db import MODEL_DATABASE, ModelSpec, get_model_spec
+from inferbox.hardware.detect import detect_hardware
+from inferbox.models import HardwareProfile
 
 
 class FitStatus(Enum):
@@ -212,7 +212,7 @@ def run_preflight(
     # Check if Ollama is running
     ollama_running = False
     try:
-        from tinybench.backends.ollama import OllamaBackend
+        from inferbox.backends.ollama import OllamaBackend
         ollama_running = OllamaBackend().is_available()
     except Exception:
         pass

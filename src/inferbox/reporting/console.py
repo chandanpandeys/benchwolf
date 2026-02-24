@@ -1,4 +1,4 @@
-"""Rich console output for TinyBench results."""
+"""Rich console output for InferBox results."""
 
 from __future__ import annotations
 
@@ -11,9 +11,9 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 
-from tinybench import __version__
-from tinybench.config import RATING_THRESHOLDS
-from tinybench.models import BenchmarkResult, HardwareProfile
+from inferbox import __version__
+from inferbox.config import RATING_THRESHOLDS
+from inferbox.models import BenchmarkResult, HardwareProfile
 
 # Force UTF-8 output on Windows to support emoji
 if sys.platform == "win32":
@@ -25,9 +25,9 @@ console = Console(force_terminal=True)
 
 
 def print_header() -> None:
-    """Print TinyBench header banner."""
+    """Print InferBox header banner."""
     header = Text()
-    header.append("🔬 TinyBench", style="bold bright_cyan")
+    header.append("🔬 InferBox", style="bold bright_cyan")
     header.append(f" v{__version__}", style="dim")
     header.append("\n")
     header.append("Edge AI Benchmark Tool", style="italic")

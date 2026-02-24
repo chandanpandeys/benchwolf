@@ -7,9 +7,9 @@ from typing import Optional
 
 import psutil
 
-from tinybench.backends.base import Backend
-from tinybench.config import MAX_TOKENS_PER_RUN, SPEED_PROMPT
-from tinybench.models import MemoryResult
+from inferbox.backends.base import Backend
+from inferbox.config import MAX_TOKENS_PER_RUN, SPEED_PROMPT
+from inferbox.models import MemoryResult
 
 
 def run_memory_benchmark(

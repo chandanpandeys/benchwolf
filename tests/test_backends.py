@@ -1,7 +1,7 @@
 """Tests for backend interface and availability checks."""
 
-from tinybench.backends.base import Backend, GenerationResult
-from tinybench.backends.ollama import OllamaBackend
+from inferbox.backends.base import Backend, GenerationResult
+from inferbox.backends.ollama import OllamaBackend
 
 
 def test_generation_result_tok_s():
@@ -46,7 +46,7 @@ def test_ollama_backend_interface():
 def test_llamacpp_backend_interface():
     """LlamaCppBackend should implement Backend interface."""
     try:
-        from tinybench.backends.llamacpp import LlamaCppBackend
+        from inferbox.backends.llamacpp import LlamaCppBackend
         backend = LlamaCppBackend()
         assert isinstance(backend, Backend)
         assert backend.name == "llamacpp"

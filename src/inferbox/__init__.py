@@ -1,4 +1,4 @@
-"""TinyBench — Edge AI Benchmark Tool.
+"""InferBox — Edge AI Benchmark Tool.
 
 Measure LLM inference performance on any hardware in one command.
 """

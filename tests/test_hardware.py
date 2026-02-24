@@ -2,8 +2,8 @@
 
 import platform
 
-from tinybench.hardware.detect import detect_hardware
-from tinybench.models import HardwareProfile
+from inferbox.hardware.detect import detect_hardware
+from inferbox.models import HardwareProfile
 
 
 def test_detect_hardware_returns_profile():

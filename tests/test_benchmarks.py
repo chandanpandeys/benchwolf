@@ -3,8 +3,8 @@
 import json
 from pathlib import Path
 
-from tinybench.config import DATA_DIR
-from tinybench.models import (
+from inferbox.config import DATA_DIR
+from inferbox.models import (
     BenchmarkResult,
     HardwareProfile,
     MemoryResult,
@@ -62,7 +62,7 @@ def test_benchmark_result_json_roundtrip():
     )
 
     result = BenchmarkResult(
-        tinybench_version="0.1.0",
+        inferbox_version="0.1.0",
         model_name="test-model:3b",
         model_quantization="Q4_K_M",
         backend="ollama",
