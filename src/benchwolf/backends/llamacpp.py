@@ -30,9 +30,7 @@ class LlamaCppBackend(Backend):
         try:
             from llama_cpp import Llama
         except ImportError as exc:
-            raise RuntimeError(
-                "llama-cpp-python is not installed. Install: pip install benchwolf[llamacpp]"
-            ) from exc
+            raise RuntimeError("llama-cpp-python is not installed. Install: pip install benchwolf[llamacpp]") from exc
 
         path = Path(model_name)
         if not path.exists():
@@ -112,9 +110,7 @@ class LlamaCppBackend(Backend):
         if "general.parameter_count" in metadata:
             params = int(metadata["general.parameter_count"])
             info["parameter_size"] = (
-                f"{params / 1_000_000_000:.1f}B"
-                if params >= 1_000_000_000
-                else f"{params / 1_000_000:.0f}M"
+                f"{params / 1_000_000_000:.1f}B" if params >= 1_000_000_000 else f"{params / 1_000_000:.0f}M"
             )
         return info
 
