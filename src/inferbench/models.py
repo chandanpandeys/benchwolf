@@ -92,9 +92,9 @@ class QualityResult(BaseModel):
 class BenchmarkResult(BaseModel):
     """Complete benchmark result."""
 
-    model_config = ConfigDict(protected_namespaces=())
+    model_config = ConfigDict(protected_namespaces=(), populate_by_name=True)
 
-    inferbench_version: str = Field(default="0.1.0", alias="inferbox_version")
+    inferbench_version: str = Field(default="0.1.0")
     timestamp: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     model_name: str
     model_quantization: Optional[str] = None

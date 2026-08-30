@@ -60,7 +60,7 @@ def generate_badge_markdown(result: BenchmarkResult) -> str:
 
     # Edge Score badge
     score_url = edge_score_badge_url(result)
-    parts.append(f"![InferBox Edge Score]({score_url})")
+    parts.append(f"![InferBench Edge Score]({score_url})")
 
     # Tok/s badge
     if result.speed:

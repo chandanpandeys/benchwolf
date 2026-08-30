@@ -93,7 +93,7 @@ def submit_result(result: BenchmarkResult) -> dict:
         "filepath": str(filepath),
         "message": (
             "Result saved locally. Public leaderboard API coming soon!\n"
-            "Results are stored in: ~/.inferbox/results/"
+            "Results are stored in: ~/.inferbench/results/"
         ),
     }
 

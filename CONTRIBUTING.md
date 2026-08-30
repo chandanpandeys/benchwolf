@@ -65,7 +65,7 @@ Look for issues labeled `good first issue` — these are beginner-friendly tasks
 ## Architecture Overview
 
 ```
-src/inferbox/
+src/inferbench/
 ├── backends/       # Inference backend abstraction (Ollama, llama.cpp)
 ├── benchmarks/     # Benchmark implementations (speed, memory, quality)
 ├── data/           # Bundled evaluation data (mini-MMLU, mini-HumanEval)

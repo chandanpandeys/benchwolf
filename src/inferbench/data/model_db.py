@@ -500,7 +500,7 @@ def get_model_spec(name: str) -> Optional[ModelSpec]:
     for spec in MODEL_DATABASE:
         if spec.name.lower().split(":")[0] == name_lower.split(":")[0]:
             if ":" in name_lower and ":" in spec.name:
-                if name_lower.split(":")[1] in spec.name.lower().split(":")[1]:
+                if spec.name.lower().split(":")[1] in name_lower.split(":")[1]:
                     return spec
 
     # Partial substring match

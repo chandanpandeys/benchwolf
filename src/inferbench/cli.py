@@ -208,7 +208,7 @@ def run(
             run_quality = False
 
     result = BenchmarkResult(
-        inferbox_version=__version__,
+        inferbench_version=__version__,
         model_name=model,
         model_quantization=model_info.get("quantization"),
         backend=backend,
@@ -393,7 +393,7 @@ def compare(models: str, backend: str, runs: int, max_tokens: int):
 
         model_info = be.get_model_info()
         result = BenchmarkResult(
-            inferbox_version=__version__,
+            inferbench_version=__version__,
             model_name=model_name,
             model_quantization=model_info.get("quantization"),
             backend=backend,

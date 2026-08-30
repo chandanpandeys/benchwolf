@@ -16,7 +16,7 @@ How would you like this to work? Be specific about the CLI interface or behavior
 
 ```bash
 # Example usage
-inferbox ...
+inferbench ...
 ```
 
 ## Alternatives Considered

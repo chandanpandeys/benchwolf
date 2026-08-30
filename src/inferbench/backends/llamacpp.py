@@ -56,7 +56,7 @@ class LlamaCppBackend(Backend):
         except ImportError:
             raise RuntimeError(
                 "llama-cpp-python is not installed. "
-                "Install with: pip install inferbox[llamacpp]"
+                "Install with: pip install inferbench[llamacpp]"
             )
 
         model_path = Path(model_name)
