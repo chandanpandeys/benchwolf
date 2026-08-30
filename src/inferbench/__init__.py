@@ -1,4 +1,4 @@
-"""InferBox — Edge AI Benchmark Tool.
+"""InferBench — Inference & Edge AI Benchmark Tool.
 
 Measure LLM inference performance on any hardware in one command.
 """

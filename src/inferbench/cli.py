@@ -1,11 +1,11 @@
-"""InferBox CLI — Edge AI Benchmark Tool.
+"""InferBench CLI — Inference & Edge AI Benchmark Tool.
 
 Usage:
-    inferbox run --model qwen2.5:3b
-    inferbox info
-    inferbox compare --models "qwen2.5:3b,phi3:3.8b"
-    inferbox preflight
-    inferbox leaderboard
+    inferbench run --model qwen2.5:3b
+    inferbench info
+    inferbench compare --models "qwen2.5:3b,phi3:3.8b"
+    inferbench preflight
+    inferbench leaderboard
 """
 
 from __future__ import annotations
@@ -17,24 +17,24 @@ from typing import Optional
 import click
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeRemainingColumn
 
-from inferbox import __version__
-from inferbox.backends.base import Backend
-from inferbox.backends.ollama import OllamaBackend
-from inferbox.benchmarks.inference import run_speed_benchmark
-from inferbox.benchmarks.memory import run_memory_benchmark
-from inferbox.benchmarks.quality import run_quality_benchmark
-from inferbox.config import RATING_THRESHOLDS
-from inferbox.hardware.detect import detect_hardware
-from inferbox.hardware.power import PowerMeter
-from inferbox.models import BenchmarkResult, PowerResult
-from inferbox.reporting.console import (
+from inferbench import __version__
+from inferbench.backends.base import Backend
+from inferbench.backends.ollama import OllamaBackend
+from inferbench.benchmarks.inference import run_speed_benchmark
+from inferbench.benchmarks.memory import run_memory_benchmark
+from inferbench.benchmarks.quality import run_quality_benchmark
+from inferbench.config import RATING_THRESHOLDS
+from inferbench.hardware.detect import detect_hardware
+from inferbench.hardware.power import PowerMeter
+from inferbench.models import BenchmarkResult, PowerResult
+from inferbench.reporting.console import (
     console,
     print_benchmark_results,
     print_comparison,
     print_hardware_info,
     print_header,
 )
-from inferbox.reporting.export import export_json, export_markdown
+from inferbench.reporting.export import export_json, export_markdown
 
 
 def _get_backend(backend_name: str) -> Backend:
@@ -43,12 +43,12 @@ def _get_backend(backend_name: str) -> Backend:
         return OllamaBackend()
     elif backend_name == "llamacpp":
         try:
-            from inferbox.backends.llamacpp import LlamaCppBackend
+            from inferbench.backends.llamacpp import LlamaCppBackend
             return LlamaCppBackend()
         except ImportError:
             console.print(
                 "[red]llama-cpp-python not installed.[/] "
-                "Install with: pip install inferbox[llamacpp]"
+                "Install with: pip install inferbench[llamacpp]"
             )
             sys.exit(1)
     else:
@@ -118,9 +118,9 @@ def _calculate_edge_score(result: BenchmarkResult) -> int:
 
 
 @click.group()
-@click.version_option(__version__, prog_name="inferbox")
+@click.version_option(__version__, prog_name="inferbench")
 def main():
-    """🔬 InferBox — Edge AI Benchmark Tool.
+    """🔬 InferBench — Inference & Edge AI Benchmark Tool.
 
     Measure LLM inference performance on any hardware in one command.
     """
@@ -295,18 +295,18 @@ def run(
         # Default output filename
         safe_model = model.replace(":", "_").replace("/", "_")
         if export == "json":
-            output = f"inferbox_{safe_model}.json"
+            output = f"inferbench_{safe_model}.json"
             export_json(result, output)
         elif export == "markdown":
-            output = f"inferbox_{safe_model}.md"
+            output = f"inferbench_{safe_model}.md"
             export_markdown(result, output)
         console.print(f"[green]✓ Results exported to {output}[/]")
 
     # Auto-save to local leaderboard
-    from inferbox.leaderboard import save_result
+    from inferbench.leaderboard import save_result
     saved_path = save_result(result)
     console.print(f"[dim]✓ Result saved to {saved_path}[/]")
-    console.print("[dim]  View all results: inferbox leaderboard[/]")
+    console.print("[dim]  View all results: inferbench leaderboard[/]")
 
 
 @main.command()
@@ -417,7 +417,7 @@ def preflight(model: Optional[str]):
     from rich.table import Table
     from rich.text import Text
 
-    from inferbox.preflight import FitStatus, run_preflight
+    from inferbench.preflight import FitStatus, run_preflight
 
     print_header()
     console.print("[bold]🔍 Preflight Hardware Check[/]")
@@ -498,7 +498,7 @@ def preflight(model: Optional[str]):
                 f"[dim]Next steps:[/]\n"
                 f"  1. Install Ollama: [cyan]https://ollama.ai[/]\n"
                 f"  2. [bold]ollama pull {rec}[/]\n"
-                f"  3. [bold]inferbox run --model {rec}[/]",
+                f"  3. [bold]inferbench run --model {rec}[/]",
                 title="[bold]💡 Recommendation[/]",
                 border_style="green",
             )
@@ -536,7 +536,7 @@ def leaderboard(clear: bool):
     from rich.panel import Panel
     from rich.table import Table
 
-    from inferbox.leaderboard import get_leaderboard_summary, RESULTS_DIR
+    from inferbench.leaderboard import get_leaderboard_summary, RESULTS_DIR
 
     print_header()
 
@@ -556,7 +556,7 @@ def leaderboard(clear: bool):
             Panel(
                 "[dim]No benchmark results saved yet.[/]\n\n"
                 "Run a benchmark first:\n"
-                "  [bold]inferbox run --model qwen2.5:3b[/]",
+                "  [bold]inferbench run --model qwen2.5:3b[/]",
                 title="[bold]🏆 Leaderboard[/]",
                 border_style="blue",
             )

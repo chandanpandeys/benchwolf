@@ -1,9 +1,9 @@
-"""llama-cpp-python backend for InferBox.
+"""llama-cpp-python backend for InferBench.
 
 Provides direct access to llama.cpp via Python bindings for
 more precise timing without HTTP overhead.
 
-Install: pip install inferbox[llamacpp]
+Install: pip install inferbench[llamacpp]
 """
 
 from __future__ import annotations
@@ -12,7 +12,7 @@ import time
 from pathlib import Path
 from typing import Optional
 
-from inferbox.backends.base import Backend, GenerationResult
+from inferbench.backends.base import Backend, GenerationResult
 
 
 class LlamaCppBackend(Backend):

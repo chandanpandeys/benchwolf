@@ -1,6 +1,6 @@
 """Leaderboard — save, view, and submit benchmark results.
 
-Results are stored locally in ~/.inferbox/results/ as JSON files.
+Results are stored locally in ~/.inferbench/results/ as JSON files.
 The `--submit` flag will upload to the public leaderboard API (when available).
 """
 
@@ -14,10 +14,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
-from inferbox.models import BenchmarkResult
+from inferbench.models import BenchmarkResult
 
 # Local storage directory
-RESULTS_DIR = Path.home() / ".inferbox" / "results"
+RESULTS_DIR = Path.home() / ".inferbench" / "results"
 
 
 def _ensure_results_dir() -> Path:
@@ -55,7 +55,7 @@ def save_result(result: BenchmarkResult) -> Path:
         "meta": {
             "os": platform.system(),
             "python": platform.python_version(),
-            "inferbox_version": result.inferbox_version,
+            "inferbench_version": result.inferbench_version,
         },
     }
 

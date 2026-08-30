@@ -1,20 +1,20 @@
-# 🔬 InferBox
+# 🔬 InferBench
 
 **The only tool that benchmarks local LLMs across speed, memory, power, AND quality — one command, one score.**
 
-[![CI](https://github.com/chandanpandeys/inferbox/actions/workflows/ci.yml/badge.svg)](https://github.com/chandanpandeys/inferbox/actions/workflows/ci.yml)
+[![CI](https://github.com/chandanpandeys/inferbench/actions/workflows/ci.yml/badge.svg)](https://github.com/chandanpandeys/inferbench/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
 ---
 
 <p align="center">
-  <img src="demo.svg" alt="InferBox CLI Output">
+  <img src="demo.svg" alt="InferBench CLI Output">
 </p>
 
-> **Don't know if your laptop or edge device can run a local LLM?** Try `inferbox preflight` — it checks your hardware specs, detects your NPU and memory bandwidth ceiling in 5 seconds, **without downloading any weights**.
+> **Don't know if your laptop or edge device can run a local LLM?** Try `inferbench preflight` — it checks your hardware specs, detects your NPU and memory bandwidth ceiling in 5 seconds, **without downloading any weights**.
 
-## Why InferBox?
+## Why InferBench?
 
 Most LLM benchmark tools only measure raw synthetic tokens-per-second. None of them answer the questions that actually matter on laptops, edge devices, and consumer hardware:
 
@@ -26,10 +26,10 @@ Most LLM benchmark tools only measure raw synthetic tokens-per-second. None of t
 - 🎯 **Is it smart enough?** Mini-MMLU (100 questions) + mini-HumanEval (20 coding problems)
 - 🏆 **Bottom line?** A single **Edge Score** out of 100
 
-### InferBox vs. Alternatives
+### InferBench vs. Alternatives
 
-| Feature | InferBox | llmBench | whichllm | aidatatools/ollama-benchmark | vLLM bench |
-|:--------|:--------:|:--------:|:--------:|:----------------------------:|:----------:|
+| Feature | InferBench | llmBench | whichllm | aidatatools/ollama-benchmark | vLLM bench |
+|:--------|:----------:|:--------:|:--------:|:----------------------------:|:----------:|
 | Generation Speed (Tok/s) | ✅ | ✅ | ❌ | ✅ | ✅ |
 | Prompt Eval / TTFT | ✅ | ✅ | ❌ | ❌ | ✅ |
 | Reasoning Token Telemetry | ✅ | ❌ | ❌ | ❌ | ❌ |
@@ -46,9 +46,9 @@ Most LLM benchmark tools only measure raw synthetic tokens-per-second. None of t
 ## Quick Start
 
 ```bash
-pip install inferbox
-inferbox preflight          # Check what your hardware can run (no downloads!)
-inferbox run --model qwen2.5:3b   # Full benchmark → Edge Score
+pip install inferbench
+inferbench preflight          # Check what your hardware can run (no downloads!)
+inferbench run --model qwen2.5:3b   # Full benchmark → Edge Score
 ```
 
 ## What It Measures
@@ -66,37 +66,37 @@ inferbox run --model qwen2.5:3b   # Full benchmark → Edge Score
 
 ```bash
 # Check if your hardware can run LLMs (no Ollama needed!)
-inferbox preflight
+inferbench preflight
 
 # Check a specific model
-inferbox preflight --model phi4:14b
+inferbench preflight --model phi4:14b
 
 # Full benchmark
-inferbox run --model qwen2.5-coder:3b
+inferbench run --model qwen2.5-coder:3b
 
 # Quick 1-minute benchmark (fewer runs, no quality suite)
-inferbox run --model qwen2.5:3b --quick
+inferbench run --model qwen2.5:3b --quick
 
 # Speed-only benchmark
-inferbox run --model qwen2.5:3b --only speed
+inferbench run --model qwen2.5:3b --only speed
 
 # Compare models side-by-side
-inferbox compare --models "qwen2.5:3b,llama3.2:3b"
+inferbench compare --models "qwen2.5:3b,llama3.2:3b"
 
 # View your benchmark history
-inferbox leaderboard
+inferbench leaderboard
 
 # Show hardware info + backend status
-inferbox info
+inferbench info
 
 # Export results
-inferbox run --model qwen2.5:3b --export json -o results.json
-inferbox run --model qwen2.5:3b --export markdown -o results.md
+inferbench run --model qwen2.5:3b --export json -o results.json
+inferbench run --model qwen2.5:3b --export markdown -o results.md
 ```
 
 ## Preflight Check
 
-Don't know which model to run? `inferbox preflight` checks your CPU, GPU, NPU, and memory bandwidth, telling you what fits — **without downloading anything**:
+Don't know which model to run? `inferbench preflight` checks your CPU, GPU, NPU, and memory bandwidth, telling you what fits — **without downloading anything**:
 
 ```
 💻 Your Hardware:
@@ -133,17 +133,17 @@ Don't know which model to run? `inferbox preflight` checks your CPU, GPU, NPU, a
 - **Ollama** running locally ([install](https://ollama.ai)) — *for benchmarks only*
 - A model pulled: `ollama pull qwen2.5:3b`
 
-> **Note:** `inferbox preflight` and `inferbox info` work without Ollama.
+> **Note:** `inferbench preflight` and `inferbench info` work without Ollama.
 
 ## Installation
 
 ```bash
 # From PyPI
-pip install inferbox
+pip install inferbench
 
 # From source
-git clone https://github.com/chandanpandeys/inferbox.git
-cd inferbox
+git clone https://github.com/chandanpandeys/inferbench.git
+cd inferbench
 pip install -e .
 
 # With llama.cpp support
@@ -154,8 +154,8 @@ pip install -e ".[llamacpp]"
 
 ```
 ╭──────────────────────────────────────────────╮
-│           🔬 InferBox v0.1.0                │
-│          Edge AI Benchmark Tool              │
+│          🔬 InferBench v0.1.0                │
+│    Inference & Edge AI Benchmark Tool        │
 ╰──────────────────────────────────────────────╯
 
 📦 Model: deepseek-r1:7b (Q4_K_M)
@@ -181,7 +181,7 @@ pip install -e ".[llamacpp]"
 
 ## Supported Models
 
-InferBox includes pre-computed architecture specs for **38+ leading local models**:
+InferBench includes pre-computed architecture specs for **38+ leading local models**:
 
 | Family | Models |
 |:-------|:-------|
@@ -197,7 +197,7 @@ Any Ollama or llama.cpp model can be benchmarked — the database is used for pr
 
 ## Cross-Platform
 
-InferBox is pure Python — works on **Windows**, **Linux**, and **macOS** out of the box with auto-detection for Apple Silicon M-series (M1-M4), Qualcomm Snapdragon X, Intel Lunar Lake / Arrow Lake, and AMD Ryzen AI (Strix Point/Halo).
+InferBench is pure Python — works on **Windows**, **Linux**, and **macOS** out of the box with auto-detection for Apple Silicon M-series (M1-M4), Qualcomm Snapdragon X, Intel Lunar Lake / Arrow Lake, and AMD Ryzen AI (Strix Point/Halo).
 
 ## Contributing
 

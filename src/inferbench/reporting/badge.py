@@ -1,4 +1,4 @@
-"""Badge generation for InferBox results.
+"""Badge generation for InferBench results.
 
 Creates shields.io badge URLs and SVG badges for README embedding.
 """
@@ -8,7 +8,7 @@ from __future__ import annotations
 from typing import Optional
 from urllib.parse import quote
 
-from inferbox.models import BenchmarkResult
+from inferbench.models import BenchmarkResult
 
 
 def _score_color(score: int) -> str:
@@ -29,7 +29,7 @@ def edge_score_badge_url(result: BenchmarkResult) -> str:
     """Generate shields.io badge URL for Edge Score."""
     score = result.edge_score or 0
     color = _score_color(score)
-    label = quote("InferBox Edge Score")
+    label = quote("InferBench Edge Score")
     return f"https://img.shields.io/badge/{label}-{score}%2F100-{color}"
 
 
@@ -54,7 +54,7 @@ def generate_badge_markdown(result: BenchmarkResult) -> str:
     """Generate full Markdown badge string for README embedding.
 
     Example output:
-        ![InferBox Edge Score](https://img.shields.io/badge/...) ![tok/s](...)
+        ![InferBench Edge Score](https://img.shields.io/badge/...) ![tok/s](...)
     """
     parts = []
 

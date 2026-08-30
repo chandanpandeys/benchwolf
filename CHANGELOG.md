@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to InferBox will be documented in this file.
+All notable changes to InferBench will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Quality Benchmarks** — mini-MMLU (100 multi-subject questions) and mini-HumanEval (20 sandboxed coding problems).
 - **Composite Edge Score** — Single 0–100 score synthesizing speed, memory efficiency, power conservation, and model intelligence.
 - **Preflight Check** — Immediate hardware compatibility and throughput estimation without downloading any model files.
-- **Model Comparison & Leaderboard** — Side-by-side benchmarking and local persistent history in `~/.inferbox/results/`.
+- **Model Comparison & Leaderboard** — Side-by-side benchmarking and local persistent history in `~/.inferbench/results/`.
 - **Automated CI/CD** — GitHub Actions test matrix across Windows, Linux, and macOS on Python 3.10, 3.11, and 3.12, with automated PyPI publishing.
 
 ### Fixed

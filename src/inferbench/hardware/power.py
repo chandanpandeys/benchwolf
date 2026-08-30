@@ -1,4 +1,4 @@
-"""Power measurement for InferBox.
+"""Power measurement for InferBench.
 
 Tiered approach:
   Tier 1: Intel RAPL (pyRAPL) — most accurate on x86

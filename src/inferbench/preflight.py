@@ -12,9 +12,9 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
-from inferbox.data.model_db import MODEL_DATABASE, ModelSpec, get_model_spec
-from inferbox.hardware.detect import detect_hardware
-from inferbox.models import HardwareProfile
+from inferbench.data.model_db import MODEL_DATABASE, ModelSpec, get_model_spec
+from inferbench.hardware.detect import detect_hardware
+from inferbench.models import HardwareProfile
 
 
 class FitStatus(Enum):
@@ -236,7 +236,7 @@ def run_preflight(
     # Check if Ollama is running
     ollama_running = False
     try:
-        from inferbox.backends.ollama import OllamaBackend
+        from inferbench.backends.ollama import OllamaBackend
         ollama_running = OllamaBackend().is_available()
     except Exception:
         pass

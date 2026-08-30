@@ -1,13 +1,13 @@
-# Contributing to InferBox
+# Contributing to InferBench
 
-Thank you for considering contributing to InferBox! Every contribution — from bug reports to code to documentation — helps make edge AI benchmarking better for everyone.
+Thank you for considering contributing to InferBench! Every contribution — from bug reports to code to documentation — helps make inference and edge AI benchmarking better for everyone.
 
 ## Quick Start
 
 ```bash
 # Clone the repo
-git clone https://github.com/chandanpandeys/inferbox.git
-cd inferbox
+git clone https://github.com/chandanpandeys/inferbench.git
+cd inferbench
 
 # Install in development mode
 pip install -e ".[dev]"
@@ -25,10 +25,10 @@ ruff check src/ tests/
 
 Open an issue with:
 - Your OS and Python version
-- InferBox version (`inferbox --version`)
+- InferBench version (`inferbench --version`)
 - Steps to reproduce
 - Expected vs actual behavior
-- Output of `inferbox info`
+- Output of `inferbench info`
 
 ### 💡 Feature Requests
 
@@ -80,13 +80,13 @@ src/inferbox/
 
 ### Adding a New Backend
 
-1. Create `src/inferbox/backends/your_backend.py`
+1. Create `src/inferbench/backends/your_backend.py`
 2. Implement the `Backend` abstract class from `base.py`
 3. Register it in `cli.py:_get_backend()`
 
 ### Adding a New Benchmark
 
-1. Create `src/inferbox/benchmarks/your_benchmark.py`
+1. Create `src/inferbench/benchmarks/your_benchmark.py`
 2. Return a Pydantic model with your results
 3. Wire it into the `run` command in `cli.py`
 

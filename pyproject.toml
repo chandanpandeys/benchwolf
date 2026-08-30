@@ -3,16 +3,16 @@ requires = ["setuptools>=68.0", "setuptools-scm>=8.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "inferbox"
+name = "inferbench"
 version = "0.1.0"
-description = "Edge AI benchmark tool — measure LLM performance on any hardware in one command"
+description = "Inference & Edge AI Benchmark Tool — measure LLM speed, memory, power & quality in one command"
 readme = "README.md"
 license = {text = "Apache-2.0"}
 requires-python = ">=3.10"
 authors = [
     {name = "Chandan Pandey"},
 ]
-keywords = ["ai", "benchmark", "edge", "llm", "inference", "performance"]
+keywords = ["ai", "benchmark", "edge", "llm", "inference", "performance", "ollama", "eval"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
@@ -40,13 +40,13 @@ power = ["pyRAPL>=0.1"]
 dev = ["pytest>=7.0", "ruff>=0.1"]
 
 [project.scripts]
-inferbox = "inferbox.cli:main"
+inferbench = "inferbench.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/chandanpandeys/inferbox"
-Repository = "https://github.com/chandanpandeys/inferbox"
-Issues = "https://github.com/chandanpandeys/inferbox/issues"
-Changelog = "https://github.com/chandanpandeys/inferbox/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/chandanpandeys/inferbench"
+Repository = "https://github.com/chandanpandeys/inferbench"
+Issues = "https://github.com/chandanpandeys/inferbench/issues"
+Changelog = "https://github.com/chandanpandeys/inferbench/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["src"]

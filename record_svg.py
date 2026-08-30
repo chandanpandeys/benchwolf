@@ -6,13 +6,13 @@ import psutil
 # Add src to path just in case
 sys.path.insert(0, os.path.abspath("src"))
 
-from inferbox.reporting.console import console
+from inferbench.reporting.console import console
 console.record = True
 console.width = 95
 
-from inferbox.cli import main
+from inferbench.cli import main
 
-sys.argv = ["inferbox", "preflight"]
+sys.argv = ["inferbench", "preflight"]
 
 print("Generating demo.svg...")
 try:
@@ -20,5 +20,5 @@ try:
 except SystemExit:
     pass
 
-console.save_svg("demo.svg", title="inferbox preflight")
+console.save_svg("demo.svg", title="inferbench preflight")
 print("Finished saving demo.svg!")

@@ -3,14 +3,14 @@
 import json
 from pathlib import Path
 
-from inferbox.benchmarks.quality import _extract_answer
-from inferbox.config import DATA_DIR
-from inferbox.data.model_db import (
+from inferbench.benchmarks.quality import _extract_answer
+from inferbench.config import DATA_DIR
+from inferbench.data.model_db import (
     MODEL_DATABASE,
     get_model_spec,
     get_quant_ram_table,
 )
-from inferbox.models import (
+from inferbench.models import (
     BenchmarkResult,
     HardwareProfile,
     MemoryResult,
@@ -18,7 +18,7 @@ from inferbox.models import (
     QualityResult,
     SpeedResult,
 )
-from inferbox.preflight import _estimate_tok_s, run_preflight
+from inferbench.preflight import _estimate_tok_s, run_preflight
 
 
 def test_mmlu_data_loads():
@@ -163,7 +163,7 @@ def test_benchmark_result_json_roundtrip():
     )
 
     result = BenchmarkResult(
-        inferbox_version="0.1.0",
+        inferbench_version="0.1.0",
         model_name="test-model:3b",
         model_quantization="Q4_K_M",
         backend="ollama",

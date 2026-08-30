@@ -8,8 +8,8 @@ from typing import Optional
 
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
-from inferbox.backends.base import Backend, GenerationResult
-from inferbox.config import (
+from inferbench.backends.base import Backend, GenerationResult
+from inferbench.config import (
     BENCHMARK_RUNS,
     MAX_TOKENS_PER_RUN,
     SPEED_PROMPT,
@@ -18,7 +18,7 @@ from inferbox.config import (
     THROTTLE_WINDOW_SECONDS,
     WARMUP_RUNS,
 )
-from inferbox.models import SpeedResult
+from inferbench.models import SpeedResult
 
 
 def run_speed_benchmark(

@@ -3,8 +3,8 @@
 import platform
 import pytest
 
-from inferbox.hardware.detect import detect_hardware
-from inferbox.models import HardwareProfile
+from inferbench.hardware.detect import detect_hardware
+from inferbench.models import HardwareProfile
 
 
 @pytest.fixture(scope="module")

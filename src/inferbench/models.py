@@ -1,4 +1,4 @@
-"""Pydantic data models for InferBox results."""
+"""Pydantic data models for InferBench results."""
 
 from __future__ import annotations
 
@@ -94,7 +94,7 @@ class BenchmarkResult(BaseModel):
 
     model_config = ConfigDict(protected_namespaces=())
 
-    inferbox_version: str
+    inferbench_version: str = Field(default="0.1.0", alias="inferbox_version")
     timestamp: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     model_name: str
     model_quantization: Optional[str] = None
