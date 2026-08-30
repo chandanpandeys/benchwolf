@@ -33,9 +33,7 @@ def _cpu_name() -> str:
         if value:
             return value
     elif system == "Windows":
-        value = _run(
-            ["powershell", "-NoProfile", "-Command", "(Get-CimInstance Win32_Processor).Name"]
-        )
+        value = _run(["powershell", "-NoProfile", "-Command", "(Get-CimInstance Win32_Processor).Name"])
         if value:
             return value.splitlines()[0].strip()
     return platform.processor() or "Unknown CPU"
