@@ -1,66 +1,59 @@
-"""Memory usage benchmarks."""
+"""System-memory pressure sampling during inference."""
 
 from __future__ import annotations
 
-import time
-from typing import Optional
+import threading
 
 import psutil
 
-from inferbench.backends.base import Backend
-from inferbench.config import MAX_TOKENS_PER_RUN, SPEED_PROMPT
-from inferbench.models import MemoryResult
+from benchwolf.backends.base import Backend
+from benchwolf.config import MAX_TOKENS_PER_RUN, MEMORY_SAMPLE_INTERVAL_SECONDS, SPEED_PROMPT
+from benchwolf.models import MemoryResult
+
+
+def _system_used_mb() -> float:
+    vm = psutil.virtual_memory()
+    return (vm.total - vm.available) / (1024**2)
 
 
 def run_memory_benchmark(
     backend: Backend,
     max_tokens: int = MAX_TOKENS_PER_RUN,
+    sample_interval_s: float = MEMORY_SAMPLE_INTERVAL_SECONDS,
 ) -> MemoryResult:
-    """Measure memory usage during inference.
+    """Sample system-wide RAM while inference is running.
 
-    Strategy:
-      1. Measure baseline RAM (before model interaction)
-      2. Run inference while polling RAM usage
-      3. Report peak RAM and model footprint
+    This intentionally does not call the delta "model RAM": Ollama can run in a
+    separate process and OS caches/background applications affect system memory.
     """
-    process = psutil.Process()
-    system_memory = psutil.virtual_memory()
+    interval = max(0.01, sample_interval_s)
+    vm = psutil.virtual_memory()
+    baseline = _system_used_mb()
+    samples = [baseline]
+    stop_event = threading.Event()
 
-    # Baseline: system memory usage before inference
-    baseline_system_mb = (system_memory.total - system_memory.available) / (1024**2)
+    def sampler() -> None:
+        while not stop_event.is_set():
+            samples.append(_system_used_mb())
+            stop_event.wait(interval)
 
-    # Track peak during inference
-    peak_mb = baseline_system_mb
-    samples: list[float] = []
+    thread = threading.Thread(target=sampler, daemon=True)
+    thread.start()
+    try:
+        backend.generate(SPEED_PROMPT, max_tokens=max_tokens)
+        backend.generate(SPEED_PROMPT, max_tokens=max_tokens)
+    finally:
+        stop_event.set()
+        thread.join(timeout=max(1.0, interval * 4))
+        samples.append(_system_used_mb())
 
-    # Start inference in a simple polling loop
-    # We run generate and sample memory before/after and during if possible
-    pre_mem = psutil.virtual_memory()
-    baseline_available_mb = pre_mem.available / (1024**2)
-
-    # Sample before
-    samples.append((pre_mem.total - pre_mem.available) / (1024**2))
-
-    # Run inference
-    backend.generate(SPEED_PROMPT, max_tokens=max_tokens)
-
-    # Sample after
-    post_mem = psutil.virtual_memory()
-    post_used_mb = (post_mem.total - post_mem.available) / (1024**2)
-    samples.append(post_used_mb)
-
-    # Run a second generation to get a stable peak
-    backend.generate(SPEED_PROMPT, max_tokens=max_tokens)
-    peak_mem = psutil.virtual_memory()
-    peak_used_mb = (peak_mem.total - peak_mem.available) / (1024**2)
-    samples.append(peak_used_mb)
-
-    peak_mb = max(samples)
-    total_ram_mb = system_memory.total / (1024**2)
-
+    peak = max(samples)
+    total_mb = vm.total / (1024**2)
     return MemoryResult(
-        peak_ram_mb=round(peak_mb, 1),
-        baseline_ram_mb=round(samples[0], 1),
-        model_ram_mb=round(peak_mb - samples[0], 1),
-        ram_utilization_pct=round((peak_mb / total_ram_mb) * 100, 1),
+        baseline_system_ram_mb=round(baseline, 1),
+        peak_system_ram_mb=round(peak, 1),
+        inference_delta_mb=round(max(0.0, peak - baseline), 1),
+        ram_utilization_pct=round((peak / total_mb) * 100.0, 1),
+        sample_count=len(samples),
+        sample_interval_ms=round(interval * 1000),
     )

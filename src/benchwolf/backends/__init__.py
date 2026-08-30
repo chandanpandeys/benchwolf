@@ -1,1 +1,1 @@
-"""Backends package."""
+"""BenchWolf backends package."""

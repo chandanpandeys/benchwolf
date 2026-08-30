@@ -1,28 +1,12 @@
 ---
-name: Feature Request
-about: Suggest a new feature or improvement
-title: "[Feature] "
-labels: enhancement
-assignees: ''
+name: Feature request
+about: Suggest an improvement to BenchWolf
 ---
 
-## Problem
+**Problem / use case**
 
-What problem does this feature solve? Describe the pain point.
+**Proposed behavior**
 
-## Proposed Solution
+**Benchmark-methodology impact**
 
-How would you like this to work? Be specific about the CLI interface or behavior.
-
-```bash
-# Example usage
-inferbench ...
-```
-
-## Alternatives Considered
-
-Any other approaches you've thought about.
-
-## Additional Context
-
-Any relevant context (links, screenshots, related issues).
+Please state whether new metrics are measured, estimated, or heuristic.

@@ -1,24 +1,22 @@
-"""Inference speed and throughput benchmarks."""
+"""Inference throughput, latency, and sustained-behavior benchmarks."""
 
 from __future__ import annotations
 
 import statistics
 import time
-from typing import Optional
 
-from rich.progress import Progress, SpinnerColumn, TextColumn
+from rich.progress import Progress
 
-from inferbench.backends.base import Backend, GenerationResult
-from inferbench.config import (
+from benchwolf.backends.base import Backend
+from benchwolf.config import (
     BENCHMARK_RUNS,
     MAX_TOKENS_PER_RUN,
     SPEED_PROMPT,
     SUSTAINED_DURATION_SECONDS,
     SUSTAINED_PROMPT,
-    THROTTLE_WINDOW_SECONDS,
     WARMUP_RUNS,
 )
-from inferbench.models import SpeedResult
+from benchwolf.models import SpeedResult
 
 
 def run_speed_benchmark(
@@ -26,116 +24,64 @@ def run_speed_benchmark(
     runs: int = BENCHMARK_RUNS,
     max_tokens: int = MAX_TOKENS_PER_RUN,
     include_sustained: bool = True,
-    progress: Optional[Progress] = None,
+    progress: Progress | None = None,
 ) -> SpeedResult:
-    """Run inference speed benchmarks.
+    runs = max(1, runs)
+    for _ in range(WARMUP_RUNS):
+        backend.generate(SPEED_PROMPT, max_tokens=max_tokens)
 
-    Protocol:
-      1. Warmup runs (discarded)
-      2. Standard runs (averaged)
-      3. Sustained run (throttle detection)
-    """
-    tok_s_values: list[float] = []
-    tok_s_prompt_values: list[float] = []
-    ttft_values: list[float] = []
-    thinking_tokens_list: list[int] = []
+    task = progress.add_task("[cyan]Speed benchmark...", total=runs) if progress else None
+    generation_rates: list[float] = []
+    prompt_rates: list[float] = []
+    ttfts: list[float] = []
+    thinking: list[int] = []
     total_tokens = 0
 
-    # --- Phase 1: Warmup ---
-    if progress:
-        task = progress.add_task("[yellow]Warmup...", total=WARMUP_RUNS)
-
-    for i in range(WARMUP_RUNS):
-        backend.generate(SPEED_PROMPT, max_tokens=max_tokens)
-        if progress:
-            progress.advance(task)
-
-    # --- Phase 2: Standard Runs ---
-    if progress:
-        task = progress.add_task("[cyan]Speed benchmark...", total=runs)
-
-    for i in range(runs):
+    for _ in range(runs):
         result = backend.generate(SPEED_PROMPT, max_tokens=max_tokens)
-
-        tok_s_values.append(result.tok_s_generation)
+        generation_rates.append(result.tok_s_generation)
         if result.tok_s_prompt > 0:
-            tok_s_prompt_values.append(result.tok_s_prompt)
-        ttft_values.append(result.ttft_s)
-        if result.thinking_tokens:
-            thinking_tokens_list.append(result.thinking_tokens)
+            prompt_rates.append(result.tok_s_prompt)
+        ttfts.append(result.ttft_s)
+        if result.thinking_tokens is not None:
+            thinking.append(result.thinking_tokens)
         total_tokens += result.completion_tokens
-
-        if progress:
+        if progress and task is not None:
             progress.advance(task)
 
-    # --- Phase 3: Sustained Run (Throttle Detection) ---
-    sustained_tok_s: Optional[float] = None
-    throttle_pct: Optional[float] = None
-
+    sustained = throttle = None
     if include_sustained:
-        if progress:
-            task = progress.add_task("[magenta]Sustained test...", total=1)
-
-        sustained_tok_s, throttle_pct = _run_sustained_benchmark(
-            backend, max_tokens=max_tokens
-        )
-
-        if progress:
-            progress.advance(task)
-
-    total_thinking = sum(thinking_tokens_list) if thinking_tokens_list else None
+        sustained, throttle = _run_sustained_benchmark(backend, max_tokens=max_tokens)
 
     return SpeedResult(
-        tok_s_generation=statistics.mean(tok_s_values) if tok_s_values else 0.0,
-        tok_s_prompt=statistics.mean(tok_s_prompt_values) if tok_s_prompt_values else 0.0,
-        ttft_seconds=statistics.mean(ttft_values) if ttft_values else 0.0,
+        tok_s_generation=statistics.mean(generation_rates),
+        tok_s_prompt=statistics.mean(prompt_rates) if prompt_rates else 0.0,
+        ttft_seconds=statistics.mean(ttfts),
         total_tokens=total_tokens,
         runs=runs,
-        sustained_tok_s=sustained_tok_s,
-        throttle_percent=throttle_pct,
-        thinking_tokens=total_thinking,
+        sustained_tok_s=sustained,
+        throttle_percent=throttle,
+        thinking_tokens=sum(thinking) if thinking else None,
     )
 
 
 def _run_sustained_benchmark(
     backend: Backend,
     max_tokens: int = 512,
-) -> tuple[Optional[float], Optional[float]]:
-    """Run sustained benchmark to detect thermal throttling.
+) -> tuple[float | None, float | None]:
+    samples: list[float] = []
+    start = time.perf_counter()
+    deadline = start + SUSTAINED_DURATION_SECONDS
 
-    Strategy: run multiple short generations and track tok/s over time.
-    Compare first window vs last window to detect degradation.
-    """
-    tok_s_over_time: list[tuple[float, float]] = []  # (elapsed_time, tok_s)
-    start_time = time.time()
-    deadline = start_time + SUSTAINED_DURATION_SECONDS
-
-    iteration = 0
-    while time.time() < deadline:
+    while time.perf_counter() < deadline and len(samples) < 8:
         result = backend.generate(SUSTAINED_PROMPT, max_tokens=max_tokens)
-        elapsed = time.time() - start_time
-        tok_s_over_time.append((elapsed, result.tok_s_generation))
-        iteration += 1
+        samples.append(result.tok_s_generation)
 
-        # At least 4 data points needed
-        if iteration >= 8:
-            break
-
-    if len(tok_s_over_time) < 4:
+    if len(samples) < 4:
         return None, None
 
-    # Calculate average tok/s over the full sustained run
-    all_tok_s = [t[1] for t in tok_s_over_time]
-    sustained_avg = statistics.mean(all_tok_s)
-
-    # Compare first half vs second half for throttle detection
-    mid = len(all_tok_s) // 2
-    first_half = statistics.mean(all_tok_s[:mid])
-    second_half = statistics.mean(all_tok_s[mid:])
-
-    if first_half > 0:
-        throttle_pct = ((first_half - second_half) / first_half) * 100
-    else:
-        throttle_pct = 0.0
-
-    return sustained_avg, round(throttle_pct, 1)
+    mid = len(samples) // 2
+    first = statistics.mean(samples[:mid])
+    second = statistics.mean(samples[mid:])
+    throttle = ((first - second) / first * 100.0) if first > 0 else 0.0
+    return round(statistics.mean(samples), 2), round(throttle, 1)

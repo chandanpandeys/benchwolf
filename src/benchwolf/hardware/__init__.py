@@ -1,1 +1,1 @@
-"""Hardware detection package."""
+"""BenchWolf hardware package."""

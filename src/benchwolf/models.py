@@ -1,11 +1,10 @@
-"""Pydantic data models for InferBench results."""
+"""Typed result models used by BenchWolf."""
 
 from __future__ import annotations
 
 import hashlib
-import json
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -23,21 +22,25 @@ class HardwareProfile(BaseModel):
     os_name: str = "Unknown"
     os_version: str = "Unknown"
     python_version: str = "Unknown"
-    gpu_name: Optional[str] = None
-    npu_name: Optional[str] = None
-    storage_type: Optional[str] = None
-    memory_bandwidth_gb_s: Optional[float] = Field(None, description="Estimated memory bandwidth in GB/s")
+    gpu_name: str | None = None
+    npu_name: str | None = None
+    storage_type: str | None = None
+    memory_bandwidth_gb_s: float | None = Field(
+        None,
+        description="Estimated peak memory bandwidth in GB/s.",
+    )
 
     @property
     def fingerprint(self) -> str:
-        """Generate a unique hardware fingerprint."""
-        key = f"{self.cpu_name}|{self.cpu_arch}|{self.cpu_cores_physical}|{self.ram_total_gb:.1f}"
+        key = (
+            f"{self.cpu_name}|{self.cpu_arch}|{self.cpu_cores_physical}|"
+            f"{self.ram_total_gb:.1f}"
+        )
         return hashlib.sha256(key.encode()).hexdigest()[:12]
 
     @property
     def summary(self) -> str:
-        """One-line hardware summary."""
-        parts = [self.cpu_name, f"{self.cpu_arch}", f"{self.ram_total_gb:.1f}GB RAM"]
+        parts = [self.cpu_name, self.cpu_arch, f"{self.ram_total_gb:.1f}GB RAM"]
         if self.gpu_name:
             parts.append(self.gpu_name)
         if self.npu_name:
@@ -48,69 +51,82 @@ class HardwareProfile(BaseModel):
 class SpeedResult(BaseModel):
     """Inference speed benchmark results."""
 
-    tok_s_generation: float = Field(description="Tokens per second (generation)")
-    tok_s_prompt: float = Field(0.0, description="Tokens per second (prompt eval)")
-    ttft_seconds: float = Field(description="Time to first token in seconds")
-    total_tokens: int = Field(description="Total tokens generated across all runs")
-    runs: int = Field(description="Number of benchmark runs")
-    sustained_tok_s: Optional[float] = Field(None, description="Sustained tok/s over long run")
-    throttle_percent: Optional[float] = Field(None, description="Speed degradation percentage")
-    thinking_tokens: Optional[int] = Field(None, description="Internal reasoning/thinking tokens generated")
-    thinking_duration_s: Optional[float] = Field(None, description="Time spent emitting thinking tokens in seconds")
+    tok_s_generation: float = Field(description="Generation tokens per second.")
+    tok_s_prompt: float = Field(0.0, description="Prompt-evaluation tokens per second.")
+    ttft_seconds: float = Field(description="Time to first token in seconds.")
+    total_tokens: int = Field(description="Total generated tokens across measured runs.")
+    runs: int = Field(description="Number of measured benchmark runs.")
+    sustained_tok_s: float | None = None
+    throttle_percent: float | None = Field(
+        None,
+        description="Heuristic throughput change between the first and second sustained windows.",
+    )
+    thinking_tokens: int | None = Field(
+        None,
+        description="Approximate reasoning-token proxy derived from tagged reasoning text.",
+    )
+    thinking_duration_s: float | None = None
 
 
 class MemoryResult(BaseModel):
-    """Memory usage benchmark results."""
+    """System-wide memory pressure observed while the model is generating."""
 
     model_config = ConfigDict(protected_namespaces=())
 
-    peak_ram_mb: float = Field(description="Peak RAM usage during inference in MB")
-    baseline_ram_mb: float = Field(description="RAM usage before model load in MB")
-    model_ram_mb: float = Field(description="RAM used by model (peak - baseline)")
-    ram_utilization_pct: float = Field(description="Percentage of total RAM used at peak")
+    baseline_system_ram_mb: float
+    peak_system_ram_mb: float
+    inference_delta_mb: float = Field(
+        description="Peak system-used RAM minus the pre-inference baseline."
+    )
+    ram_utilization_pct: float
+    sample_count: int
+    sample_interval_ms: int = 50
 
 
 class PowerResult(BaseModel):
-    """Power consumption benchmark results."""
+    """Power measurement or estimate collected while inference is running."""
 
-    method: str = Field(description="Measurement method (rapl/hwmon/battery/estimate)")
-    avg_power_watts: float = Field(description="Average power during inference in watts")
-    tok_s_per_watt: float = Field(description="Tokens per second per watt")
-    energy_per_token_mj: float = Field(description="Energy per token in millijoules")
-    measurement_duration_s: float = Field(description="Duration of power measurement")
+    method: str
+    source: Literal["measured", "estimated", "unavailable"]
+    avg_power_watts: float | None = None
+    tok_s_per_watt: float | None = None
+    energy_per_token_mj: float | None = None
+    measurement_duration_s: float
+    sample_count: int = 0
 
 
 class QualityResult(BaseModel):
-    """Quality benchmark results."""
+    """Lightweight quality benchmark results."""
 
-    mmlu_accuracy: Optional[float] = Field(None, description="Mini-MMLU accuracy (0-100)")
-    mmlu_total: Optional[int] = Field(None, description="Total MMLU questions attempted")
-    humaneval_pass_rate: Optional[float] = Field(None, description="Mini-HumanEval pass@1 (0-100)")
-    humaneval_total: Optional[int] = Field(None, description="Total HumanEval problems attempted")
+    mmlu_accuracy: float | None = None
+    mmlu_total: int | None = None
+    humaneval_pass_rate: float | None = None
+    humaneval_total: int | None = None
+    humaneval_enabled: bool = False
 
 
 class BenchmarkResult(BaseModel):
-    """Complete benchmark result."""
+    """Complete BenchWolf benchmark result."""
 
-    model_config = ConfigDict(protected_namespaces=(), populate_by_name=True)
+    model_config = ConfigDict(protected_namespaces=())
 
-    inferbench_version: str = Field(default="0.1.0")
+    benchwolf_version: str = "0.1.0"
     timestamp: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     model_name: str
-    model_quantization: Optional[str] = None
+    model_quantization: str | None = None
     backend: str
     hardware: HardwareProfile
-    speed: Optional[SpeedResult] = None
-    memory: Optional[MemoryResult] = None
-    power: Optional[PowerResult] = None
-    quality: Optional[QualityResult] = None
-    edge_score: Optional[int] = Field(None, description="Composite score 0-100")
+    speed: SpeedResult | None = None
+    memory: MemoryResult | None = None
+    power: PowerResult | None = None
+    quality: QualityResult | None = None
+    edge_score: int | None = Field(None, description="BenchWolf Edge Score v1 (0-100).")
+    edge_score_version: str = "1"
+    edge_score_is_partial: bool = True
 
     def to_json(self, indent: int = 2) -> str:
-        """Serialize to JSON string."""
         return self.model_dump_json(indent=indent)
 
     @classmethod
     def from_json(cls, data: str) -> "BenchmarkResult":
-        """Deserialize from JSON string."""
         return cls.model_validate_json(data)

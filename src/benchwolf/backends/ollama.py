@@ -1,26 +1,21 @@
-"""Ollama backend for InferBench.
-
-Uses the Ollama HTTP API for inference and timing measurement.
-"""
+"""Ollama HTTP backend for BenchWolf."""
 
 from __future__ import annotations
 
 import json
+import re
 import time
-from typing import Optional
 
 import requests
 
-from inferbench.backends.base import Backend, GenerationResult
-from inferbench.config import OLLAMA_BASE_URL, OLLAMA_TIMEOUT
+from benchwolf.backends.base import Backend, GenerationResult
+from benchwolf.config import OLLAMA_BASE_URL, OLLAMA_TIMEOUT
 
 
 class OllamaBackend(Backend):
-    """Ollama HTTP API backend."""
-
     def __init__(self, base_url: str = OLLAMA_BASE_URL):
         self._base_url = base_url.rstrip("/")
-        self._model_name: Optional[str] = None
+        self._model_name: str | None = None
         self._model_info: dict = {}
 
     @property
@@ -28,140 +23,107 @@ class OllamaBackend(Backend):
         return "ollama"
 
     def is_available(self) -> bool:
-        """Check if Ollama is running."""
         try:
-            resp = requests.get(f"{self._base_url}/api/version", timeout=5)
-            return resp.status_code == 200
+            response = requests.get(f"{self._base_url}/api/version", timeout=5)
+            return response.status_code == 200
         except (requests.ConnectionError, requests.Timeout):
             return False
 
     def load_model(self, model_name: str) -> None:
-        """Verify model is available in Ollama."""
-        self._model_name = model_name
-
-        # Check if model exists locally
         try:
-            resp = requests.post(
+            response = requests.post(
                 f"{self._base_url}/api/show",
                 json={"name": model_name},
                 timeout=30,
             )
-            if resp.status_code == 200:
-                data = resp.json()
-                self._model_info = {
-                    "name": model_name,
-                    "family": data.get("details", {}).get("family", "unknown"),
-                    "parameter_size": data.get("details", {}).get("parameter_size", "unknown"),
-                    "quantization": data.get("details", {}).get("quantization_level", "unknown"),
-                    "format": data.get("details", {}).get("format", "unknown"),
-                }
-                return
-            else:
-                raise RuntimeError(
-                    f"Model '{model_name}' not found in Ollama. "
-                    f"Run: ollama pull {model_name}"
-                )
-        except requests.ConnectionError:
-            raise RuntimeError(
-                "Cannot connect to Ollama. Is it running? Start with: ollama serve"
-            )
+        except requests.ConnectionError as exc:
+            raise RuntimeError("Cannot connect to Ollama. Start it with: ollama serve") from exc
+
+        if response.status_code != 200:
+            raise RuntimeError(f"Model '{model_name}' not found. Run: ollama pull {model_name}")
+
+        details = response.json().get("details", {})
+        self._model_name = model_name
+        self._model_info = {
+            "name": model_name,
+            "family": details.get("family", "unknown"),
+            "parameter_size": details.get("parameter_size", "unknown"),
+            "quantization": details.get("quantization_level", "unknown"),
+            "format": details.get("format", "unknown"),
+        }
 
     def generate(self, prompt: str, max_tokens: int = 256) -> GenerationResult:
-        """Generate text using Ollama streaming API and measure timing."""
         if not self._model_name:
             raise RuntimeError("No model loaded. Call load_model() first.")
 
         wall_start = time.perf_counter()
-        first_token_time: Optional[float] = None
-        generated_text = []
-        completion_tokens = 0
+        first_token_time: float | None = None
+        generated: list[str] = []
+        streamed_chunks = 0
 
-        # Ollama streaming response
-        resp = requests.post(
+        response = requests.post(
             f"{self._base_url}/api/generate",
             json={
                 "model": self._model_name,
                 "prompt": prompt,
                 "stream": True,
-                "options": {
-                    "num_predict": max_tokens,
-                    "temperature": 0.0,  # Deterministic for benchmarking
-                },
+                "options": {"num_predict": max_tokens, "temperature": 0.0},
             },
             stream=True,
             timeout=OLLAMA_TIMEOUT,
         )
-        resp.raise_for_status()
+        response.raise_for_status()
 
-        # Parse streaming NDJSON response
-        final_data = {}
-        for line in resp.iter_lines():
+        final_data: dict = {}
+        for line in response.iter_lines():
             if not line:
                 continue
             chunk = json.loads(line)
-
-            if not chunk.get("done", False):
-                # Token received
-                token = chunk.get("response", "")
-                generated_text.append(token)
-                completion_tokens += 1
-
-                if first_token_time is None:
-                    first_token_time = time.perf_counter()
-            else:
-                # Final message with stats
+            if chunk.get("done", False):
                 final_data = chunk
+                continue
+            generated.append(chunk.get("response", ""))
+            streamed_chunks += 1
+            if first_token_time is None:
+                first_token_time = time.perf_counter()
 
         wall_end = time.perf_counter()
-        full_text = "".join(generated_text)
-
-        # Extract reasoning/thinking metrics if model emits <think>...</think> tags
-        thinking_tokens = None
-        thinking_duration_s = None
-        if "<think>" in full_text:
-            import re
-            think_match = re.search(r"<think>(.*?)(?:</think>|$)", full_text, re.DOTALL)
-            if think_match:
-                think_content = think_match.group(1)
-                # Approximate token count for thinking block (~0.75 words per token)
-                thinking_tokens = max(len(think_content.split()), 1)
-
-        # Extract Ollama's own timing (in nanoseconds)
-        prompt_eval_ns = final_data.get("prompt_eval_duration", 0)
-        eval_ns = final_data.get("eval_duration", 0)
-        prompt_tokens = final_data.get("prompt_eval_count", 0)
-        eval_count = final_data.get("eval_count", completion_tokens)
-
-        # Convert nanoseconds to seconds
-        prompt_eval_s = prompt_eval_ns / 1e9 if prompt_eval_ns else 0.0
-        generation_s = eval_ns / 1e9 if eval_ns else (wall_end - (first_token_time or wall_start))
+        full_text = "".join(generated)
+        prompt_eval_s = final_data.get("prompt_eval_duration", 0) / 1e9
+        eval_s = final_data.get("eval_duration", 0) / 1e9
+        prompt_tokens = int(final_data.get("prompt_eval_count", 0) or 0)
+        completion_tokens = int(final_data.get("eval_count", streamed_chunks) or streamed_chunks)
         total_s = wall_end - wall_start
         ttft_s = (first_token_time - wall_start) if first_token_time else total_s
+        generation_s = eval_s or max(total_s - ttft_s, 0.001)
+
+        thinking_tokens = None
+        match = re.search(r"<think>(.*?)(?:</think>|$)", full_text, re.DOTALL)
+        if match:
+            thinking_tokens = max(len(match.group(1).split()), 1)
 
         return GenerationResult(
             text=full_text,
             prompt_tokens=prompt_tokens,
-            completion_tokens=eval_count or completion_tokens,
+            completion_tokens=completion_tokens,
             prompt_eval_duration_s=prompt_eval_s,
             generation_duration_s=generation_s,
             ttft_s=ttft_s,
             total_duration_s=total_s,
             thinking_tokens=thinking_tokens,
-            thinking_duration_s=thinking_duration_s,
         )
 
     def get_model_info(self) -> dict:
-        """Get loaded model information."""
         return self._model_info
 
     def unload(self) -> None:
-        """Unload model from Ollama memory."""
-        if self._model_name:
-            try:
-                requests.post(
-                    f"{self._base_url}/api/generate",
-                    json={"model": self._model_name, "keep_alive": 0},
-                    timeout=10,
-                )
-            except Exception:
-                pass
+        if not self._model_name:
+            return
+        try:
+            requests.post(
+                f"{self._base_url}/api/generate",
+                json={"model": self._model_name, "keep_alive": 0},
+                timeout=10,
+            )
+        except requests.RequestException:
+            pass

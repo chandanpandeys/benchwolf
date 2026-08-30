@@ -1,6 +1,3 @@
-"""InferBench — Inference & Edge AI Benchmark Tool.
-
-Measure LLM inference performance on any hardware in one command.
-"""
+"""BenchWolf — local LLM benchmarking for real hardware."""
 
 __version__ = "0.1.0"

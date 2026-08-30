@@ -1,1 +1,1 @@
-"""Benchmarks package."""
+"""BenchWolf benchmarks package."""

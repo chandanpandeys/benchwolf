@@ -1,1 +1,1 @@
-"""Reporting package."""
+"""BenchWolf reporting package."""
