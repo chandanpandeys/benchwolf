@@ -40,6 +40,10 @@ def export_markdown(result: BenchmarkResult, output_path: str) -> None:
 
     if result.hardware.gpu_name:
         lines.append(f"| GPU | {result.hardware.gpu_name} |")
+    if result.hardware.npu_name:
+        lines.append(f"| NPU | {result.hardware.npu_name} |")
+    if result.hardware.memory_bandwidth_gb_s:
+        lines.append(f"| Est. Bandwidth | ~{result.hardware.memory_bandwidth_gb_s:.0f} GB/s |")
 
     lines.extend(["", "## Results", "", "| Metric | Value |", "|:---|:---|"])
 

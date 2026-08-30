@@ -38,6 +38,7 @@ def run_speed_benchmark(
     tok_s_values: list[float] = []
     tok_s_prompt_values: list[float] = []
     ttft_values: list[float] = []
+    thinking_tokens_list: list[int] = []
     total_tokens = 0
 
     # --- Phase 1: Warmup ---
@@ -60,6 +61,8 @@ def run_speed_benchmark(
         if result.tok_s_prompt > 0:
             tok_s_prompt_values.append(result.tok_s_prompt)
         ttft_values.append(result.ttft_s)
+        if result.thinking_tokens:
+            thinking_tokens_list.append(result.thinking_tokens)
         total_tokens += result.completion_tokens
 
         if progress:
@@ -80,6 +83,8 @@ def run_speed_benchmark(
         if progress:
             progress.advance(task)
 
+    total_thinking = sum(thinking_tokens_list) if thinking_tokens_list else None
+
     return SpeedResult(
         tok_s_generation=statistics.mean(tok_s_values) if tok_s_values else 0.0,
         tok_s_prompt=statistics.mean(tok_s_prompt_values) if tok_s_prompt_values else 0.0,
@@ -88,6 +93,7 @@ def run_speed_benchmark(
         runs=runs,
         sustained_tok_s=sustained_tok_s,
         throttle_percent=throttle_pct,
+        thinking_tokens=total_thinking,
     )
 
 

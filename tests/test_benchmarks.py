@@ -1,9 +1,15 @@
-"""Tests for benchmark data and models."""
+"""Tests for benchmark data, models, and quality evaluation."""
 
 import json
 from pathlib import Path
 
+from inferbox.benchmarks.quality import _extract_answer
 from inferbox.config import DATA_DIR
+from inferbox.data.model_db import (
+    MODEL_DATABASE,
+    get_model_spec,
+    get_quant_ram_table,
+)
 from inferbox.models import (
     BenchmarkResult,
     HardwareProfile,
@@ -12,6 +18,7 @@ from inferbox.models import (
     QualityResult,
     SpeedResult,
 )
+from inferbox.preflight import _estimate_tok_s, run_preflight
 
 
 def test_mmlu_data_loads():
@@ -46,6 +53,98 @@ def test_humaneval_data_loads():
         assert "tests" in item
 
 
+def test_mmlu_extract_answer_various_formats():
+    """_extract_answer should accurately parse diverse LLM response styles."""
+    # Direct letter
+    assert _extract_answer("A") == "A"
+    assert _extract_answer("  b  ") == "B"
+    assert _extract_answer("C.") == "C"
+    assert _extract_answer("D)") == "D"
+
+    # Preambles (Bug fix verification: must not match 'a' in 'answer' or 'b' in 'based')
+    assert _extract_answer("The answer is D") == "D"
+    assert _extract_answer("The correct answer is (B)") == "B"
+    assert _extract_answer("Based on the choices, D is correct.") == "D"
+    assert _extract_answer("Answer: C") == "C"
+    assert _extract_answer("Option A is the right choice") == "A"
+    assert _extract_answer("Choice: B") == "B"
+
+    # Markdown / formatting
+    assert _extract_answer("**A**") == "A"
+    assert _extract_answer("(C)") == "C"
+    assert _extract_answer("[D]") == "D"
+
+    # Thinking models with <think> tags (DeepSeek R1 / QwQ)
+    thinking_output = (
+        "<think>\n"
+        "Let's analyze choice A, B, C, and D.\n"
+        "Option A is tempting, but option C has the correct formula.\n"
+        "</think>\n"
+        "The correct answer is C."
+    )
+    assert _extract_answer(thinking_output) == "C"
+
+    # None cases
+    assert _extract_answer("") is None
+    assert _extract_answer("No valid option found") is None
+
+
+def test_model_database_expanded_2026():
+    """Model database should include 35+ models with MoE specifications."""
+    assert len(MODEL_DATABASE) >= 35
+
+    # Check key models
+    qwen = get_model_spec("qwen2.5:3b")
+    assert qwen is not None
+    assert qwen.params_b == 3.0
+
+    phi4 = get_model_spec("phi4:14b")
+    assert phi4 is not None
+    assert phi4.family == "Phi-4"
+
+    # Check MoE models
+    llama4 = get_model_spec("llama4:scout")
+    assert llama4 is not None
+    assert llama4.is_moe is True
+    assert llama4.active_params_b == 12.0
+    assert llama4.effective_inference_params_b == 12.0
+
+    deepseek_v3 = get_model_spec("deepseek-v3:671b")
+    assert deepseek_v3 is not None
+    assert deepseek_v3.is_moe is True
+    assert deepseek_v3.active_params_b == 37.0
+    assert deepseek_v3.effective_inference_params_b == 37.0
+
+
+def test_quant_ram_table():
+    """Quantization RAM table should calculate valid estimates for various bit depths."""
+    table = get_quant_ram_table(8.0)
+    assert "Q4_K_M (4-bit default)" in table
+    assert "Q8_0 / FP8 (8-bit)" in table
+    assert "FP16 (16-bit unquantized)" in table
+    # Higher bit depths should take strictly more RAM
+    assert table["FP16 (16-bit unquantized)"] > table["Q8_0 / FP8 (8-bit)"] > table["Q4_K_M (4-bit default)"]
+
+
+def test_preflight_bandwidth_ceiling_calculation():
+    """Preflight check should compute memory bandwidth ceiling."""
+    spec = get_model_spec("qwen2.5:3b")
+    assert spec is not None
+
+    hw = HardwareProfile(
+        cpu_name="Apple M4 Pro",
+        cpu_arch="arm64",
+        cpu_cores_physical=12,
+        ram_total_gb=36.0,
+        memory_bandwidth_gb_s=273.0,
+    )
+
+    tok_s, ceiling = _estimate_tok_s(spec, hw)
+    assert ceiling is not None
+    assert ceiling > 100.0  # M4 Pro has 273 GB/s bandwidth -> very high peak ceiling
+    assert tok_s > 20.0
+
+
 def test_benchmark_result_json_roundtrip():
     """BenchmarkResult should serialize to JSON and back."""
     hw = HardwareProfile(
@@ -59,6 +158,8 @@ def test_benchmark_result_json_roundtrip():
         os_name="Linux",
         os_version="6.1",
         python_version="3.10.0",
+        memory_bandwidth_gb_s=64.0,
+        npu_name="AMD XDNA 2 NPU (50+ TOPS)",
     )
 
     result = BenchmarkResult(
@@ -75,6 +176,7 @@ def test_benchmark_result_json_roundtrip():
             runs=5,
             sustained_tok_s=14.0,
             throttle_percent=-3.2,
+            thinking_tokens=120,
         ),
         memory=MemoryResult(
             peak_ram_mb=3000.0,
@@ -103,11 +205,14 @@ def test_benchmark_result_json_roundtrip():
 
     assert restored.model_name == "test-model:3b"
     assert restored.speed.tok_s_generation == 15.0
+    assert restored.speed.thinking_tokens == 120
     assert restored.memory.model_ram_mb == 2500.0
     assert restored.power.method == "estimate"
     assert restored.quality.mmlu_accuracy == 62.0
     assert restored.edge_score == 72
     assert restored.hardware.cpu_name == "Test CPU"
+    assert restored.hardware.npu_name == "AMD XDNA 2 NPU (50+ TOPS)"
+    assert restored.hardware.memory_bandwidth_gb_s == 64.0
     assert restored.hardware.fingerprint == hw.fingerprint
 
 
@@ -118,10 +223,12 @@ def test_speed_result_fields():
         ttft_seconds=1.0,
         total_tokens=500,
         runs=3,
+        thinking_tokens=50,
     )
     assert s.tok_s_prompt == 0.0  # default
     assert s.sustained_tok_s is None  # optional
     assert s.throttle_percent is None  # optional
+    assert s.thinking_tokens == 50
 
 
 def test_hardware_fingerprint_changes():

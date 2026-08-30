@@ -6,6 +6,7 @@ WITHOUT downloading anything — no Ollama, no model files.
 
 from __future__ import annotations
 
+import os
 import shutil
 from dataclasses import dataclass
 from enum import Enum
@@ -33,7 +34,8 @@ class ModelFitResult:
     available_ram_gb: float
     ram_headroom_gb: float      # How much RAM is left after loading
     disk_ok: bool               # Enough disk space?
-    estimated_tok_s: Optional[float] = None  # Rough tok/s estimate
+    estimated_tok_s: Optional[float] = None  # Expected tok/s estimate
+    bandwidth_ceiling_tok_s: Optional[float] = None  # Theoretical peak tok/s
     reason: str = ""
 
     @property
@@ -70,32 +72,53 @@ class PreflightReport:
     ollama_running: bool = False
 
 
-def _estimate_tok_s(model: ModelSpec, hw: HardwareProfile) -> float:
-    """Very rough tok/s estimate based on hardware.
+def _estimate_tok_s(model: ModelSpec, hw: HardwareProfile) -> tuple[float, Optional[float]]:
+    """Estimate throughput (realistic tok/s and theoretical memory bandwidth ceiling).
 
-    Uses a simple heuristic:
-    - Base: ~5 tok/s for a 3B Q4 model on a modern 4-core CPU
-    - Scale linearly with cores, inversely with model size
-    - Bonus for higher CPU frequency
+    Text generation speed for LLMs is fundamentally memory-bandwidth bound:
+        Theoretical Max Tok/s = Memory Bandwidth (GB/s) / Active Model Weights (GB)
+
+    Args:
+        model: Model specifications.
+        hw: Detected hardware profile.
+
+    Returns:
+        (estimated_realistic_tok_s, theoretical_bandwidth_ceiling_tok_s)
     """
-    base_tok_s = 5.0
+    effective_params = model.effective_inference_params_b
+    weight_size_gb = max(effective_params * 0.55, 0.08)  # ~0.55 GB per 1B params at Q4_K_M
+
+    bandwidth_ceiling = None
+    if hw.memory_bandwidth_gb_s and hw.memory_bandwidth_gb_s > 0:
+        bandwidth_ceiling = round(hw.memory_bandwidth_gb_s / weight_size_gb, 1)
+
+    # 1. Hardware acceleration estimation (Apple Silicon / Dedicated GPU)
+    if hw.gpu_name or "apple" in hw.cpu_name.lower() or "darwin" in hw.os_name.lower():
+        # High-performance hardware typically reaches ~45-75% of theoretical bandwidth efficiency
+        if bandwidth_ceiling:
+            realistic = bandwidth_ceiling * 0.58
+            return round(max(realistic, 1.0), 1), bandwidth_ceiling
+
+    # 2. CPU / Standard RAM heuristic estimation
+    base_tok_s = 6.0
     base_params = 3.0
     base_cores = 4
 
-    # Scale by model size (inversely proportional)
-    size_factor = base_params / max(model.params_b, 0.1)
-
-    # Scale by available cores
+    size_factor = base_params / max(effective_params, 0.1)
     cores = max(hw.cpu_cores_physical, 1)
-    core_factor = min(cores / base_cores, 2.0)  # Cap at 2x
+    core_factor = min(cores / base_cores, 2.5)
 
-    # Frequency bonus (baseline 2.5 GHz)
     freq_factor = 1.0
     if hw.cpu_freq_mhz and hw.cpu_freq_mhz > 0:
-        freq_factor = min(hw.cpu_freq_mhz / 2500, 1.5)
+        freq_factor = min(hw.cpu_freq_mhz / 2500.0, 1.6)
 
     estimated = base_tok_s * size_factor * core_factor * freq_factor
-    return round(max(estimated, 0.5), 1)
+
+    # Cap by bandwidth ceiling if known
+    if bandwidth_ceiling and estimated > bandwidth_ceiling:
+        estimated = bandwidth_ceiling * 0.5
+
+    return round(max(estimated, 0.5), 1), bandwidth_ceiling
 
 
 def _check_model_fit(
@@ -132,7 +155,10 @@ def _check_model_fit(
         status = FitStatus.EASY
         reason = f"{headroom:.1f} GB headroom"
 
-    tok_s = _estimate_tok_s(model, hw) if status != FitStatus.NO_FIT else None
+    tok_s = None
+    ceiling = None
+    if status != FitStatus.NO_FIT:
+        tok_s, ceiling = _estimate_tok_s(model, hw)
 
     return ModelFitResult(
         model=model,
@@ -141,6 +167,7 @@ def _check_model_fit(
         ram_headroom_gb=round(headroom, 1),
         disk_ok=True,
         estimated_tok_s=tok_s,
+        bandwidth_ceiling_tok_s=ceiling,
         reason=reason,
     )
 
@@ -175,8 +202,6 @@ def run_preflight(
         free_disk = round(disk.free / (1024 ** 3), 1)
     except Exception:
         try:
-            # Windows fallback
-            import os
             disk = shutil.disk_usage(os.path.expanduser("~"))
             free_disk = round(disk.free / (1024 ** 3), 1)
         except Exception:
@@ -188,12 +213,11 @@ def run_preflight(
         if spec:
             models_to_check = [spec]
         else:
-            # Unknown model — check all
             models_to_check = MODEL_DATABASE
     else:
         models_to_check = MODEL_DATABASE
 
-    # Check models against usable RAM (not current available)
+    # Check models against usable RAM
     results: list[ModelFitResult] = []
     for model in models_to_check:
         result = _check_model_fit(model, hw, usable_ram, free_disk)
@@ -227,4 +251,3 @@ def run_preflight(
         can_run_any=can_run_any,
         ollama_running=ollama_running,
     )
-

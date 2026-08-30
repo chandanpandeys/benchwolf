@@ -144,6 +144,7 @@ def main():
 @click.option("--runs", "-r", default=5, help="Number of benchmark runs (default: 5)")
 @click.option("--max-tokens", default=256, help="Max tokens per generation (default: 256)")
 @click.option("--no-sustained", is_flag=True, help="Skip sustained/throttle test")
+@click.option("--quick", is_flag=True, help="Run a quick 1-minute benchmark (fewer runs, no quality, no sustained)")
 @click.option(
     "--export",
     type=click.Choice(["json", "markdown"]),
@@ -158,6 +159,7 @@ def run(
     runs: int,
     max_tokens: int,
     no_sustained: bool,
+    quick: bool,
     export: Optional[str],
     output: Optional[str],
 ):
@@ -198,6 +200,12 @@ def run(
     run_memory = only in ("all", "memory")
     run_power = only in ("all", "power")
     run_quality = only in ("all", "quality")
+
+    if quick:
+        runs = min(runs, 2)
+        no_sustained = True
+        if only == "all":
+            run_quality = False
 
     result = BenchmarkResult(
         inferbox_version=__version__,
@@ -424,10 +432,16 @@ def preflight(model: Optional[str]):
     hw_table.add_column(style="bold cyan")
     hw_table.add_column()
     hw_table.add_row("CPU", hw.cpu_name)
-    hw_table.add_row("Cores", f"{hw.cpu_cores_physical}P / {hw.cpu_cores_logical}L")
+    hw_table.add_row("Cores", f"{hw.cpu_cores_physical}P / {hw.cpu_cores_logical}L ({hw.cpu_arch})")
+    if hw.gpu_name:
+        hw_table.add_row("GPU", hw.gpu_name)
+    if hw.npu_name:
+        hw_table.add_row("NPU / AI Engine", f"[bright_magenta]{hw.npu_name}[/]")
     hw_table.add_row("RAM Total", f"{hw.ram_total_gb:.1f} GB")
     hw_table.add_row("RAM Free Now", f"[dim]{report.available_ram_gb:.1f} GB[/]")
     hw_table.add_row("RAM Usable", f"[{'green' if report.usable_ram_gb > 3 else 'yellow' if report.usable_ram_gb > 1.5 else 'red'}]{report.usable_ram_gb:.1f} GB[/] [dim](total minus OS)[/]")
+    if hw.memory_bandwidth_gb_s:
+        hw_table.add_row("Est. Bandwidth", f"~{hw.memory_bandwidth_gb_s:.0f} GB/s [dim](memory bus)[/]")
     hw_table.add_row("Disk Free", f"{report.free_disk_gb:.1f} GB")
     hw_table.add_row("Ollama", "[green]Running ✓[/]" if report.ollama_running else "[dim]Not detected[/]")
 
@@ -440,7 +454,7 @@ def preflight(model: Optional[str]):
     model_table.add_column("Size", justify="right")
     model_table.add_column("RAM Needed", justify="right")
     model_table.add_column("Download", justify="right")
-    model_table.add_column("Est. tok/s", justify="right")
+    model_table.add_column("Est. Speed", justify="right")
     model_table.add_column("Status")
 
     for r in report.model_results:
@@ -454,11 +468,17 @@ def preflight(model: Optional[str]):
         else:
             status_style = "red"
 
-        tok_s_str = f"~{r.estimated_tok_s}" if r.estimated_tok_s else "—"
+        tok_s_str = f"~{r.estimated_tok_s} t/s" if r.estimated_tok_s else "—"
+        if r.bandwidth_ceiling_tok_s and r.status in (FitStatus.EASY, FitStatus.GOOD):
+            tok_s_str = f"~{r.estimated_tok_s} t/s [dim](max {r.bandwidth_ceiling_tok_s:.0f})[/]"
+
+        size_label = f"{r.model.params_b}B"
+        if r.model.is_moe and r.model.active_params_b:
+            size_label = f"{r.model.active_params_b}B/{r.model.params_b}B"
 
         model_table.add_row(
             r.model.name,
-            f"{r.model.params_b}B",
+            size_label,
             f"{r.model.min_ram_gb:.1f} GB",
             f"{r.model.disk_size_gb:.1f} GB",
             tok_s_str,

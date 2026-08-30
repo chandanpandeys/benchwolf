@@ -10,7 +10,7 @@ readme = "README.md"
 license = {text = "Apache-2.0"}
 requires-python = ">=3.10"
 authors = [
-    {name = "Agnara", email = "inferbox@agenticbitbox.com"},
+    {name = "Chandan Pandey"},
 ]
 keywords = ["ai", "benchmark", "edge", "llm", "inference", "performance"]
 classifiers = [
@@ -43,9 +43,10 @@ dev = ["pytest>=7.0", "ruff>=0.1"]
 inferbox = "inferbox.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/Agnara/inferbox"
-Repository = "https://github.com/Agnara/inferbox"
-Issues = "https://github.com/Agnara/inferbox/issues"
+Homepage = "https://github.com/chandanpandeys/inferbox"
+Repository = "https://github.com/chandanpandeys/inferbox"
+Issues = "https://github.com/chandanpandeys/inferbox/issues"
+Changelog = "https://github.com/chandanpandeys/inferbox/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["src"]

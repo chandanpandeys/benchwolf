@@ -176,30 +176,47 @@ class PowerMeter:
         return None
 
     def _read_battery(self) -> Optional[float]:
-        """Estimate power from battery drain rate."""
+        """Estimate power from battery hardware sensors or drain rate."""
         try:
+            # 1. Linux sysfs direct power_now (µW) or voltage_now (µV) * current_now (µA)
+            if platform.system() == "Linux":
+                try:
+                    power_supply = Path("/sys/class/power_supply")
+                    if power_supply.exists():
+                        for bat in power_supply.glob("BAT*"):
+                            p_file = bat / "power_now"
+                            if p_file.exists():
+                                uw = int(p_file.read_text().strip())
+                                if uw > 0:
+                                    return uw / 1_000_000.0
+                            c_file = bat / "current_now"
+                            v_file = bat / "voltage_now"
+                            if c_file.exists() and v_file.exists():
+                                ua = int(c_file.read_text().strip())
+                                uv = int(v_file.read_text().strip())
+                                if ua > 0 and uv > 0:
+                                    return (ua * uv) / 1_000_000_000_000.0
+                except Exception:
+                    pass
+
             battery = psutil.sensors_battery()
             if battery is None or battery.power_plugged:
                 return None
 
-            # psutil gives secsleft — estimate watts from system TDP
-            # This is a rough estimate
-            pct1 = battery.percent
-            time.sleep(0.5)
-            battery2 = psutil.sensors_battery()
-            if battery2 is None:
-                return None
-            pct2 = battery2.percent
+            # 2. psutil secsleft: if secsleft > 0, estimate power using battery capacity
+            # Typical laptop battery is ~50Wh to 70Wh
+            battery_wh = 55.0
+            if battery.secsleft and battery.secsleft > 0 and battery.secsleft != psutil.POWER_TIME_UNLIMITED:
+                # Remaining energy / remaining hours = discharge watts
+                remaining_wh = (battery.percent / 100.0) * battery_wh
+                remaining_hours = battery.secsleft / 3600.0
+                if remaining_hours > 0:
+                    watts = remaining_wh / remaining_hours
+                    if 2.0 <= watts <= 150.0:
+                        return round(watts, 1)
 
-            if pct1 == pct2:
-                # Can't measure, use TDP estimate
-                return self._estimate_power()
-
-            # Typical laptop battery is ~50Wh
-            battery_wh = 50.0
-            drain_rate = (pct1 - pct2) / 0.5 * 3600  # %/hour
-            watts = (drain_rate / 100) * battery_wh
-            return max(watts, 1.0)  # At least 1W
+            # 3. Fallback to utilization-based TDP estimation
+            return self._estimate_power()
         except Exception:
             return None
 

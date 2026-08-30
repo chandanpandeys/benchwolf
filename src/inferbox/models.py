@@ -26,6 +26,7 @@ class HardwareProfile(BaseModel):
     gpu_name: Optional[str] = None
     npu_name: Optional[str] = None
     storage_type: Optional[str] = None
+    memory_bandwidth_gb_s: Optional[float] = Field(None, description="Estimated memory bandwidth in GB/s")
 
     @property
     def fingerprint(self) -> str:
@@ -39,6 +40,8 @@ class HardwareProfile(BaseModel):
         parts = [self.cpu_name, f"{self.cpu_arch}", f"{self.ram_total_gb:.1f}GB RAM"]
         if self.gpu_name:
             parts.append(self.gpu_name)
+        if self.npu_name:
+            parts.append(self.npu_name)
         return " | ".join(parts)
 
 
@@ -52,6 +55,8 @@ class SpeedResult(BaseModel):
     runs: int = Field(description="Number of benchmark runs")
     sustained_tok_s: Optional[float] = Field(None, description="Sustained tok/s over long run")
     throttle_percent: Optional[float] = Field(None, description="Speed degradation percentage")
+    thinking_tokens: Optional[int] = Field(None, description="Internal reasoning/thinking tokens generated")
+    thinking_duration_s: Optional[float] = Field(None, description="Time spent emitting thinking tokens in seconds")
 
 
 class MemoryResult(BaseModel):

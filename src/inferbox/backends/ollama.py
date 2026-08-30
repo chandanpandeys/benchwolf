@@ -113,6 +113,18 @@ class OllamaBackend(Backend):
                 final_data = chunk
 
         wall_end = time.perf_counter()
+        full_text = "".join(generated_text)
+
+        # Extract reasoning/thinking metrics if model emits <think>...</think> tags
+        thinking_tokens = None
+        thinking_duration_s = None
+        if "<think>" in full_text:
+            import re
+            think_match = re.search(r"<think>(.*?)(?:</think>|$)", full_text, re.DOTALL)
+            if think_match:
+                think_content = think_match.group(1)
+                # Approximate token count for thinking block (~0.75 words per token)
+                thinking_tokens = max(len(think_content.split()), 1)
 
         # Extract Ollama's own timing (in nanoseconds)
         prompt_eval_ns = final_data.get("prompt_eval_duration", 0)
@@ -127,13 +139,15 @@ class OllamaBackend(Backend):
         ttft_s = (first_token_time - wall_start) if first_token_time else total_s
 
         return GenerationResult(
-            text="".join(generated_text),
+            text=full_text,
             prompt_tokens=prompt_tokens,
             completion_tokens=eval_count or completion_tokens,
             prompt_eval_duration_s=prompt_eval_s,
             generation_duration_s=generation_s,
             ttft_s=ttft_s,
             total_duration_s=total_s,
+            thinking_tokens=thinking_tokens,
+            thinking_duration_s=thinking_duration_s,
         )
 
     def get_model_info(self) -> dict:

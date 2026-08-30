@@ -101,13 +101,19 @@ def print_benchmark_results(result: BenchmarkResult) -> None:
             table.add_row(
                 "Tok/s (prompt)",
                 f"{s.tok_s_prompt:.1f}",
-                "",
+                _rating_stars("tok_s", s.tok_s_prompt / 2.0),
             )
         table.add_row(
             "TTFT",
             f"{s.ttft_seconds:.2f}s",
             _rating_stars("ttft", s.ttft_seconds),
         )
+        if s.thinking_tokens is not None and s.thinking_tokens > 0:
+            table.add_row(
+                "Reasoning Tokens",
+                f"{s.thinking_tokens:,} tokens",
+                "🧠",
+            )
         if s.sustained_tok_s is not None:
             table.add_row(
                 "Sustained Tok/s",

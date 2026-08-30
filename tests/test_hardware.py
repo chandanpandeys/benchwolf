@@ -1,56 +1,56 @@
 """Tests for hardware detection module."""
 
 import platform
+import pytest
 
 from inferbox.hardware.detect import detect_hardware
 from inferbox.models import HardwareProfile
 
 
-def test_detect_hardware_returns_profile():
+@pytest.fixture(scope="module")
+def hw_profile():
+    """Cache hardware profile across tests in module for fast execution."""
+    return detect_hardware()
+
+
+def test_detect_hardware_returns_profile(hw_profile):
     """detect_hardware should return a HardwareProfile."""
-    hw = detect_hardware()
-    assert isinstance(hw, HardwareProfile)
+    assert isinstance(hw_profile, HardwareProfile)
 
 
-def test_cpu_name_not_empty():
+def test_cpu_name_not_empty(hw_profile):
     """CPU name should never be empty."""
-    hw = detect_hardware()
-    assert hw.cpu_name != ""
-    assert hw.cpu_name != "Unknown" or platform.system() not in ("Windows", "Linux", "Darwin")
+    assert hw_profile.cpu_name != ""
+    assert hw_profile.cpu_name != "Unknown" or platform.system() not in ("Windows", "Linux", "Darwin")
 
 
-def test_cpu_cores_positive():
+def test_cpu_cores_positive(hw_profile):
     """Core counts must be positive integers."""
-    hw = detect_hardware()
-    assert hw.cpu_cores_physical > 0
-    assert hw.cpu_cores_logical > 0
-    assert hw.cpu_cores_logical >= hw.cpu_cores_physical
+    assert hw_profile.cpu_cores_physical > 0
+    assert hw_profile.cpu_cores_logical > 0
+    assert hw_profile.cpu_cores_logical >= hw_profile.cpu_cores_physical
 
 
-def test_ram_detected():
+def test_ram_detected(hw_profile):
     """RAM values should be positive."""
-    hw = detect_hardware()
-    assert hw.ram_total_gb > 0
-    assert hw.ram_available_gb > 0
-    assert hw.ram_available_gb <= hw.ram_total_gb
+    assert hw_profile.ram_total_gb > 0
+    assert hw_profile.ram_available_gb > 0
+    assert hw_profile.ram_available_gb <= hw_profile.ram_total_gb
 
 
-def test_os_info():
+def test_os_info(hw_profile):
     """OS name should be detected."""
-    hw = detect_hardware()
-    assert hw.os_name in ("Windows", "Linux", "Darwin")
+    assert hw_profile.os_name in ("Windows", "Linux", "Darwin")
 
 
-def test_fingerprint_consistent():
+def test_fingerprint_consistent(hw_profile):
     """Same hardware should produce the same fingerprint."""
-    hw1 = detect_hardware()
     hw2 = detect_hardware()
-    assert hw1.fingerprint == hw2.fingerprint
-    assert len(hw1.fingerprint) == 12
+    assert hw_profile.fingerprint == hw2.fingerprint
+    assert len(hw_profile.fingerprint) == 12
 
 
-def test_summary_format():
+def test_summary_format(hw_profile):
     """Summary should be a pipe-separated string."""
-    hw = detect_hardware()
-    assert "|" in hw.summary
-    assert "RAM" in hw.summary
+    assert "|" in hw_profile.summary
+    assert "RAM" in hw_profile.summary

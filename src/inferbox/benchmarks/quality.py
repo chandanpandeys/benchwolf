@@ -84,12 +84,55 @@ def _format_mmlu_prompt(question: dict) -> str:
 
 
 def _extract_answer(text: str) -> Optional[str]:
-    """Extract A/B/C/D answer from model output."""
-    text = text.strip()
-    # Try to find a single letter answer
-    match = re.match(r"^[^A-Da-d]*([A-Da-d])", text)
-    if match:
-        return match.group(1).upper()
+    """Extract A/B/C/D answer from model output using multi-strategy parsing.
+    
+    Handles:
+    - Thinking tokens (<think>...</think>)
+    - Explicit answers: 'The answer is D', 'Answer: C', 'Option B'
+    - Formatted tokens: '**A**', '(B)', 'C.', 'D)'
+    - Standalone single-letter responses
+    """
+    if not text:
+        return None
+
+    # Strip thinking blocks (e.g. DeepSeek R1, QwQ)
+    cleaned = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL).strip()
+    if not cleaned:
+        cleaned = text.strip()
+
+    # Strategy 1: Explicit answer phrases (case-insensitive)
+    explicit_patterns = [
+        r"(?:the\s+(?:correct\s+)?answer\s+(?:is|would\s+be)\s*:?\s*[\*\(]*([A-Da-d])[\*\)]*)",
+        r"(?:answer\s*:\s*[\*\(]*([A-Da-d])[\*\)]*)",
+        r"(?:option\s+[\*\(]*([A-Da-d])[\*\)]*)",
+        r"(?:choice\s+[\*\(]*([A-Da-d])[\*\)]*)",
+    ]
+    for pattern in explicit_patterns:
+        match = re.search(pattern, cleaned, re.IGNORECASE)
+        if match:
+            return match.group(1).upper()
+
+    # Strategy 2: First line starting directly with option letter (e.g. "A", "(A)", "A.", "**A**", "A)")
+    first_line = cleaned.split("\n")[0].strip()
+    first_line_match = re.match(r"^[\*\(]*([A-Da-d])[\*\)\.\:\s]*", first_line)
+    if first_line_match:
+        # Avoid matching words like "All", "An", "Apple", "Because"
+        candidate = first_line_match.group(1).upper()
+        # Verify it's isolated or followed by punctuation/space
+        if len(first_line) == 1 or not first_line[0:2].isalpha() or first_line.startswith(candidate + ")") or first_line.startswith(candidate + "."):
+            return candidate
+
+    # Strategy 3: Bolded or parenthesized letter anywhere in the text: (B), **B**, [B]
+    bracket_match = re.search(r"[\*\({\[]\s*([A-Da-d])\s*[\*\)}\]]", cleaned)
+    if bracket_match:
+        return bracket_match.group(1).upper()
+
+    # Strategy 4: Fallback - look for standalone single letter A-D token
+    words = re.findall(r"\b([A-Da-d])\b", cleaned)
+    if words:
+        # Return the last standalone letter (often the concluding answer)
+        return words[-1].upper()
+
     return None
 
 

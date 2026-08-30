@@ -18,6 +18,8 @@ class GenerationResult:
     generation_duration_s: float  # Time to generate tokens
     ttft_s: float  # Time to first token
     total_duration_s: float  # Total wall-clock time
+    thinking_tokens: Optional[int] = None  # Thinking/reasoning tokens generated
+    thinking_duration_s: Optional[float] = None  # Duration spent emitting thinking tokens
 
     @property
     def tok_s_generation(self) -> float:
