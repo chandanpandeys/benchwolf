@@ -21,7 +21,11 @@ def run_quality_benchmark(
     progress: Progress | None = None,
     allow_code_execution: bool = False,
 ) -> QualityResult:
-    """Run mini-MMLU and optionally mini-HumanEval."""
+    """Run mini-MMLU and optionally mini-HumanEval.
+
+    HumanEval is disabled by default because evaluating it executes model-generated
+    Python. A subprocess timeout is useful for containment but is not a security sandbox.
+    """
     mmlu_accuracy, mmlu_total = _run_mini_mmlu(backend, progress)
     humaneval_pass = humaneval_total = None
     if allow_code_execution:
@@ -99,9 +103,7 @@ def _run_mini_humaneval(
         return None, None
     problems = json.loads(path.read_text(encoding="utf-8"))
     task = (
-        progress.add_task("[blue]mini-HumanEval (code execution enabled)...", total=len(problems))
-        if progress
-        else None
+        progress.add_task("[blue]mini-HumanEval (code execution enabled)...", total=len(problems)) if progress else None
     )
     passed = 0
     for problem in problems:
