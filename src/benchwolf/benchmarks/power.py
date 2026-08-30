@@ -40,9 +40,7 @@ def run_power_benchmark(
         source=measurement.source,
         avg_power_watts=round(watts, 2) if watts is not None else None,
         tok_s_per_watt=round(tok_s_per_watt, 3) if tok_s_per_watt is not None else None,
-        energy_per_token_mj=(
-            round(energy_per_token_mj, 2) if energy_per_token_mj is not None else None
-        ),
+        energy_per_token_mj=(round(energy_per_token_mj, 2) if energy_per_token_mj is not None else None),
         measurement_duration_s=round(measurement.duration_s, 2),
         sample_count=len(measurement.samples),
     )
