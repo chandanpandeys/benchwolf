@@ -32,10 +32,7 @@ class HardwareProfile(BaseModel):
 
     @property
     def fingerprint(self) -> str:
-        key = (
-            f"{self.cpu_name}|{self.cpu_arch}|{self.cpu_cores_physical}|"
-            f"{self.ram_total_gb:.1f}"
-        )
+        key = f"{self.cpu_name}|{self.cpu_arch}|{self.cpu_cores_physical}|{self.ram_total_gb:.1f}"
         return hashlib.sha256(key.encode()).hexdigest()[:12]
 
     @property
@@ -75,9 +72,7 @@ class MemoryResult(BaseModel):
 
     baseline_system_ram_mb: float
     peak_system_ram_mb: float
-    inference_delta_mb: float = Field(
-        description="Peak system-used RAM minus the pre-inference baseline."
-    )
+    inference_delta_mb: float = Field(description="Peak system-used RAM minus the pre-inference baseline.")
     ram_utilization_pct: float
     sample_count: int
     sample_interval_ms: int = 50
