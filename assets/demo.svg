@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">BenchWolf example terminal output</title>
+  <desc id="desc">Illustrative BenchWolf CLI benchmark output showing measured speed, memory, power provenance, and a partial Edge Score.</desc>
+  <rect width="1200" height="620" rx="24" fill="#0d1117"/>
+  <rect x="1" y="1" width="1198" height="618" rx="23" fill="none" stroke="#30363d" stroke-width="2"/>
+  <circle cx="42" cy="38" r="8" fill="#ff5f56"/>
+  <circle cx="68" cy="38" r="8" fill="#ffbd2e"/>
+  <circle cx="94" cy="38" r="8" fill="#27c93f"/>
+  <text x="600" y="44" fill="#8b949e" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" text-anchor="middle">BenchWolf • illustrative output</text>
+  <line x1="24" y1="66" x2="1176" y2="66" stroke="#30363d"/>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="22">
+    <text x="42" y="112" fill="#7ee787">$</text>
+    <text x="68" y="112" fill="#f0f6fc">benchwolf run --model qwen2.5:3b --quick</text>
+
+    <text x="42" y="164" fill="#58a6ff">🐺 BenchWolf v0.1.0</text>
+    <text x="42" y="198" fill="#8b949e">Local LLM benchmarks on your own hardware</text>
+
+    <text x="42" y="250" fill="#f0f6fc">Metric</text>
+    <text x="460" y="250" fill="#f0f6fc">Value</text>
+    <text x="790" y="250" fill="#f0f6fc">Provenance</text>
+    <line x1="42" y1="266" x2="1128" y2="266" stroke="#30363d"/>
+
+    <text x="42" y="306" fill="#c9d1d9">Generation</text>
+    <text x="460" y="306" fill="#7ee787">32.4 tok/s</text>
+    <text x="790" y="306" fill="#8b949e">measured</text>
+
+    <text x="42" y="346" fill="#c9d1d9">TTFT</text>
+    <text x="460" y="346" fill="#7ee787">0.38 s</text>
+    <text x="790" y="346" fill="#8b949e">measured</text>
+
+    <text x="42" y="386" fill="#c9d1d9">Peak system RAM</text>
+    <text x="460" y="386" fill="#7ee787">8.1 GB</text>
+    <text x="790" y="386" fill="#8b949e">sampled system-wide</text>
+
+    <text x="42" y="426" fill="#c9d1d9">Power</text>
+    <text x="460" y="426" fill="#d2a8ff">—</text>
+    <text x="790" y="426" fill="#d2a8ff">unavailable • no fabricated fallback</text>
+
+    <line x1="42" y1="454" x2="1128" y2="454" stroke="#30363d"/>
+    <text x="42" y="504" fill="#58a6ff">Edge Score v1</text>
+    <text x="460" y="504" fill="#f2cc60">74 / 100 • partial</text>
+
+    <text x="42" y="564" fill="#8b949e" font-size="17">Illustrative values only — actual results depend on model, backend, hardware, and enabled benchmark components.</text>
+  </g>
+</svg>
