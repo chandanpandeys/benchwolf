@@ -28,13 +28,9 @@ BenchWolf deliberately does **not** call system-wide RAM delta “model RAM,” 
 
 ## Install
 
-BenchWolf requires Python 3.10+.
+BenchWolf requires Python 3.10+ and is available from PyPI:
 
 ```bash
-# From a source checkout before the first PyPI release
-python -m pip install -e ".[dev]"
-
-# Once v0.1.0 is published to PyPI
 python -m pip install benchwolf
 ```
 
@@ -42,6 +38,14 @@ Optional direct llama.cpp support:
 
 ```bash
 python -m pip install "benchwolf[llamacpp]"
+```
+
+For development from a source checkout:
+
+```bash
+git clone https://github.com/chandanpandeys/benchwolf.git
+cd benchwolf
+python -m pip install -e ".[dev]"
 ```
 
 The default backend is [Ollama](https://ollama.com/).
