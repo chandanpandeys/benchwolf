@@ -45,10 +45,10 @@ dev = [
 benchwolf = "benchwolf.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/chandanpandeys/inferbench"
-Repository = "https://github.com/chandanpandeys/inferbench"
-Issues = "https://github.com/chandanpandeys/inferbench/issues"
-Changelog = "https://github.com/chandanpandeys/inferbench/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/chandanpandeys/benchwolf"
+Repository = "https://github.com/chandanpandeys/benchwolf"
+Issues = "https://github.com/chandanpandeys/benchwolf/issues"
+Changelog = "https://github.com/chandanpandeys/benchwolf/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["src"]
