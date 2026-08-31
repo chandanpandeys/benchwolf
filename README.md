@@ -6,6 +6,12 @@ BenchWolf is an open-source CLI for comparing local language-model inference acr
 
 > **Status:** `0.1.0` alpha. The benchmark protocol and Edge Score are versioned so results can evolve without pretending different methodologies are directly comparable.
 
+<p align="center">
+  <img src="assets/demo.svg" alt="Illustrative BenchWolf terminal output" width="100%" />
+</p>
+
+*Illustrative output; benchmark values vary by model, backend, hardware, and enabled components.*
+
 ## What it measures
 
 | Area | Metric | Provenance |
