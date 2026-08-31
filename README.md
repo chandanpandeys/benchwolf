@@ -135,8 +135,8 @@ JSON output includes the BenchWolf version, Edge Score version, whether the scor
 ## Development
 
 ```bash
-git clone https://github.com/chandanpandeys/inferbench.git
-cd inferbench
+git clone https://github.com/chandanpandeys/benchwolf.git
+cd benchwolf
 python -m pip install -e ".[dev]"
 ruff check src tests
 ruff format --check src tests
