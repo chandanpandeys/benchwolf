@@ -46,11 +46,7 @@ def calculate_edge_score(result: BenchmarkResult) -> ScoreSummary:
     if result.memory:
         components.append((_clamp(100.0 - result.memory.ram_utilization_pct), 20))
 
-    if (
-        result.power
-        and result.power.source == "measured"
-        and result.power.tok_s_per_watt is not None
-    ):
+    if result.power and result.power.source == "measured" and result.power.tok_s_per_watt is not None:
         components.append((_clamp(result.power.tok_s_per_watt / 3.0 * 100.0), 15))
 
     if result.quality and result.quality.mmlu_accuracy is not None:
