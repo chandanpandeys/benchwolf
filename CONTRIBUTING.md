@@ -5,8 +5,8 @@ Thanks for helping improve BenchWolf. Keep benchmark changes reproducible, cross
 ## Setup
 
 ```bash
-git clone https://github.com/chandanpandeys/inferbench.git
-cd inferbench
+git clone https://github.com/chandanpandeys/benchwolf.git
+cd benchwolf
 python -m pip install -e ".[dev]"
 ```
 
