@@ -39,10 +39,7 @@ def _get_backend(backend_name: str) -> Backend:
         try:
             from benchwolf.backends.llamacpp import LlamaCppBackend
         except ImportError:
-            console.print(
-                "[red]llama-cpp-python is not installed.[/] "
-                "Install it with: pip install benchwolf[llamacpp]"
-            )
+            console.print("[red]llama-cpp-python is not installed.[/] Install it with: pip install benchwolf[llamacpp]")
             raise click.Abort from None
         return LlamaCppBackend()
     raise click.ClickException(f"Unknown backend: {backend_name}")
@@ -83,10 +80,7 @@ def main() -> None:
 @click.option(
     "--allow-code-execution",
     is_flag=True,
-    help=(
-        "Opt in to mini-HumanEval. This executes model-generated Python locally and is NOT "
-        "a security sandbox."
-    ),
+    help=("Opt in to mini-HumanEval. This executes model-generated Python locally and is NOT a security sandbox."),
 )
 @click.option("--export", "export_format", type=click.Choice(["json", "markdown"]))
 @click.option("--output", "-o", type=click.Path(dir_okay=False, path_type=Path))
@@ -138,9 +132,7 @@ def run(
             run_quality = False
 
     if allow_code_execution and not run_quality:
-        console.print(
-            "[yellow]--allow-code-execution has no effect because quality benchmarks are skipped.[/]"
-        )
+        console.print("[yellow]--allow-code-execution has no effect because quality benchmarks are skipped.[/]")
 
     with Progress(
         SpinnerColumn(),
@@ -167,9 +159,7 @@ def run(
             result.power = run_power_benchmark(adapter, max_tokens=max_tokens)
         if run_quality:
             if allow_code_execution:
-                console.print(
-                    "[bold yellow]⚠ mini-HumanEval code execution explicitly enabled.[/]"
-                )
+                console.print("[bold yellow]⚠ mini-HumanEval code execution explicitly enabled.[/]")
             result.quality = run_quality_benchmark(
                 adapter,
                 progress=progress,
@@ -181,9 +171,7 @@ def run(
 
     if export_format:
         safe_model = model.replace(":", "_").replace("/", "_").replace("\\", "_")
-        destination = output or Path(
-            f"benchwolf_{safe_model}.{'json' if export_format == 'json' else 'md'}"
-        )
+        destination = output or Path(f"benchwolf_{safe_model}.{'json' if export_format == 'json' else 'md'}")
         if export_format == "json":
             export_json(result, str(destination))
         else:
@@ -292,7 +280,9 @@ def preflight(model: str | None) -> None:
         style = (
             "green"
             if item.status in {FitStatus.EASY, FitStatus.GOOD}
-            else "yellow" if item.status == FitStatus.TIGHT else "red"
+            else "yellow"
+            if item.status == FitStatus.TIGHT
+            else "red"
         )
         table.add_row(
             item.model.name,
