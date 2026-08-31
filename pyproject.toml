@@ -1,24 +1,22 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "inferbench"
+name = "benchwolf"
 version = "0.1.0"
-description = "Inference & Edge AI Benchmark Tool — measure LLM speed, memory, power & quality in one command"
+description = "Benchmark local LLM throughput, latency, memory pressure, power, and lightweight quality on your own hardware"
 readme = "README.md"
-license = {text = "Apache-2.0"}
+license = "Apache-2.0"
+license-files = ["LICENSE"]
 requires-python = ">=3.10"
-authors = [
-    {name = "Chandan Pandey"},
-]
-keywords = ["ai", "benchmark", "edge", "llm", "inference", "performance", "ollama", "eval"]
+authors = [{name = "Chandan Pandey"}]
+keywords = ["ai", "benchmark", "llm", "inference", "ollama", "edge-ai", "performance"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -27,20 +25,24 @@ classifiers = [
     "Topic :: System :: Benchmark",
 ]
 dependencies = [
-    "click>=8.0",
-    "rich>=13.0",
-    "psutil>=5.9",
-    "requests>=2.28",
-    "pydantic>=2.0",
+    "click>=8.1,<9",
+    "rich>=13,<15",
+    "psutil>=5.9,<8",
+    "requests>=2.31,<3",
+    "pydantic>=2.7,<3",
 ]
 
 [project.optional-dependencies]
 llamacpp = ["llama-cpp-python>=0.2"]
-power = ["pyRAPL>=0.1"]
-dev = ["pytest>=7.0", "ruff>=0.1"]
+dev = [
+    "build>=1.2,<2",
+    "pytest>=8,<10",
+    "ruff>=0.12,<1",
+    "twine>=6,<7",
+]
 
 [project.scripts]
-inferbench = "inferbench.cli:main"
+benchwolf = "benchwolf.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/chandanpandeys/inferbench"
@@ -50,13 +52,19 @@ Changelog = "https://github.com/chandanpandeys/inferbench/blob/main/CHANGELOG.md
 
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["benchwolf*"]
 
 [tool.setuptools.package-data]
-inferbench = ["data/*.json"]
+benchwolf = ["data/*.json"]
 
 [tool.ruff]
 target-version = "py310"
-line-length = 100
+line-length = 120
+extend-exclude = ["src/benchwolf/data/model_db.py"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
+ignore = ["B027"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

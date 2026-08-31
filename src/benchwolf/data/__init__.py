@@ -1,0 +1,1 @@
+"""Bundled BenchWolf benchmark data."""

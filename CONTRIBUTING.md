@@ -1,95 +1,29 @@
-# Contributing to InferBench
+# Contributing to BenchWolf
 
-Thank you for considering contributing to InferBench! Every contribution — from bug reports to code to documentation — helps make inference and edge AI benchmarking better for everyone.
+Thanks for helping improve BenchWolf. Keep benchmark changes reproducible, cross-platform where practical, and explicit about whether a value is measured, estimated, or heuristic.
 
-## Quick Start
+## Setup
 
 ```bash
-# Clone the repo
 git clone https://github.com/chandanpandeys/inferbench.git
 cd inferbench
-
-# Install in development mode
-pip install -e ".[dev]"
-
-# Run tests
-pytest tests/ -v
-
-# Run linter
-ruff check src/ tests/
+python -m pip install -e ".[dev]"
 ```
 
-## How to Contribute
+Before opening a pull request:
 
-### 🐛 Bug Reports
-
-Open an issue with:
-- Your OS and Python version
-- InferBench version (`inferbench --version`)
-- Steps to reproduce
-- Expected vs actual behavior
-- Output of `inferbench info`
-
-### 💡 Feature Requests
-
-Open an issue and describe:
-- The problem you're trying to solve
-- Your proposed solution
-- Any alternatives you've considered
-
-### 🔧 Pull Requests
-
-1. Fork the repo and create a branch from `main`
-2. Make your changes
-3. Add or update tests as needed
-4. Run `pytest tests/ -v` and `ruff check src/` to verify
-5. Write a clear PR description explaining what and why
-6. Submit the PR
-
-### Good First Issues
-
-Look for issues labeled `good first issue` — these are beginner-friendly tasks like:
-- Adding new models to the model database
-- Improving error messages
-- Writing additional tests
-- Documentation improvements
-
-## Code Style
-
-- **Python 3.10+** — use modern type hints
-- **Ruff** for linting and formatting (`ruff check`, `ruff format`)
-- **Line length:** 100 characters max
-- **Docstrings:** Google-style for all public functions
-- **Tests:** pytest, placed in `tests/`
-
-## Architecture Overview
-
-```
-src/inferbench/
-├── backends/       # Inference backend abstraction (Ollama, llama.cpp)
-├── benchmarks/     # Benchmark implementations (speed, memory, quality)
-├── data/           # Bundled evaluation data (mini-MMLU, mini-HumanEval)
-├── hardware/       # Hardware detection and power measurement
-├── reporting/      # Console output and export (JSON, Markdown)
-├── cli.py          # CLI entry point (Click)
-├── config.py       # Configuration constants
-├── models.py       # Pydantic data models
-├── preflight.py    # Hardware feasibility checker
-└── leaderboard.py  # Local results storage
+```bash
+ruff check src tests
+ruff format --check src tests
+pytest -q
+python -m build
+python -m twine check dist/*
 ```
 
-### Adding a New Backend
+## Benchmark changes
 
-1. Create `src/inferbench/backends/your_backend.py`
-2. Implement the `Backend` abstract class from `base.py`
-3. Register it in `cli.py:_get_backend()`
+When changing methodology, add regression tests and update the README. Changes that alter Edge Score meaning must also change or document the score version; do not silently make old and new scores look comparable.
 
-### Adding a New Benchmark
+## Security
 
-1. Create `src/inferbench/benchmarks/your_benchmark.py`
-2. Return a Pydantic model with your results
-3. Wire it into the `run` command in `cli.py`
-
-## License
-
-By contributing, you agree that your contributions will be licensed under the Apache 2.0 License.
+Never make generated-code execution implicit. HumanEval or similar execution-based evaluators must remain explicit opt-in and document their isolation limitations.
