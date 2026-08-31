@@ -122,8 +122,7 @@ def print_benchmark_results(result: BenchmarkResult) -> None:
         qualifier = "partial" if result.edge_score_is_partial else "full"
         console.print(
             Panel(
-                f"[bold]Edge Score v{result.edge_score_version}: {result.edge_score}/100[/] "
-                f"[dim]({qualifier})[/]",
+                f"[bold]Edge Score v{result.edge_score_version}: {result.edge_score}/100[/] [dim]({qualifier})[/]",
                 border_style="cyan",
                 expand=False,
             )
